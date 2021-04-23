@@ -1,7 +1,7 @@
 tracked-queue
 ==============================================================================
 
-[Short description of the addon.]
+An [autotracked](https://v5.chriskrycho.com/journal/autotracking-elegant-dx-via-cutting-edge-cs/) implementation of a ring-buffer-style queue, backed by a native (autotracked) JavaScript array.
 
 
 Compatibility
