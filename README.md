@@ -11,6 +11,8 @@ Compatibility
 * Ember CLI v2.13 or above
 * Node.js v12 or above
 
+### TypeScript
+
 This project follows the current draft of [the Semantic Versioning for TypeScript Types][semver] proposal.
 
 * **Currently supported TypeScript versions:** v4.1 and v4.2
@@ -19,6 +21,10 @@ This project follows the current draft of [the Semantic Versioning for TypeScrip
 
 [semver]: https://github.com/chriskrycho/ember-rfcs/blob/semver-for-ts/text/0730-semver-for-ts.md
 [sm]: https://github.com/chriskrycho/ember-rfcs/blob/semver-for-ts/text/0730-semver-for-ts.md#simple-majors
+
+### Browser support
+
+This project uses native `Proxy` (via a dependency), and so is not compatible with IE11. It supports N-1 for all other browsers.
 
 Installation
 ------------------------------------------------------------------------------
