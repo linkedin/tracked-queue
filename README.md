@@ -1,11 +1,12 @@
-tracked-queue
-==============================================================================
+# tracked-queue
+
+<!--[![npm(https://img.shields.io/npm/v/tracked-queue.svg])](https://www.npmjs.com/package/tracked-queue)-->
+[![CI](https://github.com/chriskrycho/tracked-queue/actions/workflows/CI.yml/badge.svg)](https://github.com/chriskrycho/tracked-queue/actions/workflows/CI.yml) [![Supportd TypeScript Versions](https://img.shields.io/badge/TypeScript-4.1%20%7C%204.2%20%7C%20next-3178c6)](https://github.com/chriskrycho/tracked-queue/blob/main/.github/workflows/CI.yml#L82) [![Nightly TypeScript Run](https://github.com/chriskrycho/tracked-queue/actions/workflows/Nightly%20TypeScript%20Run.yml/badge.svg)](https://github.com/chriskrycho/tracked-queue/actions/workflows/Nightly%20TypeScript%20Run.yml)
 
 An [autotracked](https://v5.chriskrycho.com/journal/autotracking-elegant-dx-via-cutting-edge-cs/) implementation of a ring-buffer-style queue, backed by a native (autotracked) JavaScript array.
 
 
-Compatibility
-------------------------------------------------------------------------------
+## Compatibility
 
 * Ember.js v3.16 or above
 * Ember CLI v2.13 or above
@@ -26,27 +27,37 @@ This project follows the current draft of [the Semantic Versioning for TypeScrip
 
 This project uses native `Proxy` (via a dependency), and so is not compatible with IE11. It supports N-1 for all other browsers.
 
-Installation
-------------------------------------------------------------------------------
+## Installation
 
-```
-ember install tracked-queue
-```
+- With npm:
+
+    ```sh
+    npm install tracked-queue
+    ```
+
+- With yarn:
+
+    ```sh
+    yarn add tracked-queue
+    ```
+
+- With ember-cli:
+
+    ```sh
+    ember install tracked-queue
+    ```
 
 
-Usage
-------------------------------------------------------------------------------
+## Usage
 
 [Longer description of how to use the addon in apps.]
 
 
-Contributing
-------------------------------------------------------------------------------
+## Contributing
 
 See the [Contributing](CONTRIBUTING.md) guide for details.
 
 
-License
-------------------------------------------------------------------------------
+## License
 
 This project is licensed under the [MIT License](LICENSE.md).
