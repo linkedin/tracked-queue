@@ -38,9 +38,24 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --frozen-lockfile --non-interactive
-      - run: ember:test
+      - run: ember test
 
-  tests_ember:
+  tests_other:
+    needs: lint
+    name: 'Tests: ${{ matrix.os }}'
+    runs-on: '${{ matrix.os }}-latest'
+
+    strategy:
+      matrix:
+        os: [macOS, windows]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: volta-cli/action@v1
+      - run: yarn install --frozen-lockfile --non-interactive
+      - run: ember test
+
+  tests_ember_compat:
     needs: [lint, tests_linux]
     name: 'Ember compatibility tests: ember-source@${{ matrix.ember-version }})'
     runs-on: ubuntu-latest
@@ -57,22 +72,7 @@ jobs:
       - run: yarn install --frozen-lockfile --non-interactive
       - run: ember try:one ember-${{ matrix.ember-version }}
 
-  tests_other:
-    needs: lint
-    name: 'Tests: ${{ matrix.os }}'
-    runs-on: '${{ matrix.os }}-latest'
-
-    strategy:
-      matrix:
-        os: [macOS, windows]
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: volta-cli/action@v1
-      - run: yarn install --frozen-lockfile --non-interactive
-      - run: yarn test:ember
-
-  tests_ts:
+  tests_ts_compat:
     needs: lint
     name: 'Type checking: TS ${{ matrix.ts-version }}'
     runs-on: ubuntu-latest
