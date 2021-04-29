@@ -1,5 +1,4 @@
 import { tracked } from '@glimmer/tracking';
-import { TrackedArray } from 'tracked-built-ins';
 
 function assert(desc: string): never;
 function assert(desc: string, pred: unknown): asserts pred;
@@ -41,7 +40,7 @@ class Cursors {
       - internal utilities
  */
 class _TrackedQueue<T> {
-  private _queue: TrackedArray<T | undefined>;
+  private _queue: Array<T | undefined>;
   private _cap: number;
   private _cursors = new Cursors();
 
@@ -57,7 +56,7 @@ class _TrackedQueue<T> {
     // The storage has one extra slot in it so that once we are pushing items on
     // either end, the head and tail are never overlapping.
     this._cap = capacity + 1;
-    this._queue = TrackedArray.from({ length: this._cap });
+    this._queue = Array.from({ length: this._cap });
   }
 
   static of<A>(as: Array<A>): TrackedQueue<A> {
@@ -349,7 +348,7 @@ class _TrackedQueue<T> {
 
   /** Delete all the items in the queue. */
   clear() {
-    this._queue = TrackedArray.from({ length: this._cap });
+    this._queue = Array.from({ length: this._cap });
     this._cursors.head = 0;
     this._cursors.tail = 0;
   }
