@@ -7,6 +7,11 @@ function someNumber() {
   return Math.round(Math.random() * size);
 }
 
+interface Item {
+  body: string;
+  random: number;
+}
+
 const initialData = Array.from({ length: size }, (_, i) => ({
   body: `message ${i}`,
   random: someNumber(),
@@ -15,26 +20,26 @@ const initialData = Array.from({ length: size }, (_, i) => ({
 export default class ApplicationController extends Controller {
   bigQueue: TrackedQueue<{ body: string; random: number }>;
 
-  get subset() {
+  get subset(): Item[] {
     return this.bigQueue.range({ from: 100, to: 200 });
   }
 
-  get tinyWindow() {
+  get tinyWindow(): Item[] {
     return this.bigQueue.range({ from: 990, to: 1000 });
   }
 
-  get bigWindow() {
+  get bigWindow(): Item[] {
     return this.bigQueue.range({ from: 10, to: 4990 });
   }
 
-  get tail() {
+  get tail(): Item[] {
     return this.bigQueue.range({
       from: this.bigQueue.size - 10,
       to: this.bigQueue.size,
     });
   }
 
-  get randomValue() {
+  get randomValue(): Item | undefined {
     return this.bigQueue.at(221);
   }
 
