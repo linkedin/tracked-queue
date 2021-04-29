@@ -19,13 +19,6 @@ interface Config {
  */
 type Maybe<T> = ['just', T] | ['nothing', undefined];
 
-class Cursors {
-  /** Pointer to the next point to write into the queue. */
-  @tracked head = 0;
-  /** Pointer to the start of the queue. */
-  @tracked tail = 0;
-}
-
 /**
   Notes on the implementation:
 
@@ -40,9 +33,17 @@ class Cursors {
       - internal utilities
  */
 class _TrackedQueue<T> {
+  /** The backing storage for the queue. */
   private _queue: Array<T | undefined>;
+
+  /** The capacity of the queue. */
   private _cap: number;
-  private _cursors = new Cursors();
+
+  /** Pointer to the next point to write into the queue. */
+  @tracked private _head = 0;
+
+  /** Pointer to the start of the queue. */
+  @tracked private _tail = 0;
 
   constructor({ capacity }: Config) {
     if (this.constructor !== _TrackedQueue) {
@@ -68,7 +69,7 @@ class _TrackedQueue<T> {
   }
 
   get size(): number {
-    const { head, tail } = this._cursors;
+    const { _head: head, _tail: tail } = this;
     if (head == tail) {
       return 0;
     } else if (head > tail) {
@@ -129,7 +130,7 @@ class _TrackedQueue<T> {
    */
   at(index: number): T | undefined {
     return index < this.size
-      ? this._queue[(this._cursors.tail + index) % this._cap]
+      ? this._queue[(this._tail + index) % this._cap]
       : undefined;
   }
 
@@ -203,19 +204,18 @@ class _TrackedQueue<T> {
 
   // Implementation of pushBack which can be used safely internally.
   _pushBack(value: T): Maybe<T> {
-    const queue = this._queue;
-    const { head, tail } = this._cursors;
+    const { _head: head, _tail: tail } = this;
 
     const nextHead = this._wrappingAdd(head, 1);
-    queue[head] = value;
-    this._cursors.head = nextHead;
+    this._queue[head] = value;
+    this._head = nextHead;
 
     let popped: Maybe<T>;
     if (nextHead === tail) {
-      popped = ['just', queue[tail] as T];
-      queue[tail] = undefined;
+      popped = ['just', this._queue[tail] as T];
+      this._queue[tail] = undefined;
       const nextTail = this._wrappingAdd(tail, 1);
-      this._cursors.tail = nextTail;
+      this._tail = nextTail;
     } else {
       popped = ['nothing', undefined];
     }
@@ -238,23 +238,21 @@ class _TrackedQueue<T> {
 
   // Implementation of pushBack which can be used safely internally.
   _pushFront(value: T): Maybe<T> {
-    const queue = this._queue;
-    const { head, tail } = this._cursors;
-
-    const nextFront = this._wrappingSub(tail, 1);
+    const head = this._head;
+    const nextFront = this._wrappingSub(this._tail, 1);
 
     let popped: Maybe<T>;
     if (nextFront === head) {
       const nextHead = this._wrappingSub(head, 1);
-      popped = ['just', queue[nextHead] as T];
-      queue[nextHead] = undefined;
-      this._cursors.head = nextHead;
+      popped = ['just', this._queue[nextHead] as T];
+      this._queue[nextHead] = undefined;
+      this._head = nextHead;
     } else {
       popped = ['nothing', undefined];
     }
 
-    queue[nextFront] = value;
-    this._cursors.tail = nextFront;
+    this._queue[nextFront] = value;
+    this._tail = nextFront;
 
     return popped;
   }
@@ -265,12 +263,12 @@ class _TrackedQueue<T> {
       return undefined;
     }
 
-    const { head } = this._cursors;
+    const head = this._head;
     const nextHead = this._wrappingSub(head, 1);
 
     const popped = this.back;
     this._queue[head] = undefined;
-    this._cursors.head = nextHead;
+    this._head = nextHead;
     return popped;
   }
 
@@ -280,12 +278,12 @@ class _TrackedQueue<T> {
       return undefined;
     }
 
-    const { tail } = this._cursors;
-    const nextTail = this._wrappingAdd(tail, 1);
+    const { _tail } = this;
+    const nextTail = this._wrappingAdd(_tail, 1);
 
     const popped = this.front;
-    this._queue[tail] = undefined;
-    this._cursors.tail = nextTail;
+    this._queue[_tail] = undefined;
+    this._tail = nextTail;
     return popped;
   }
 
@@ -349,8 +347,8 @@ class _TrackedQueue<T> {
   /** Delete all the items in the queue. */
   clear() {
     this._queue = Array.from({ length: this._cap });
-    this._cursors.head = 0;
-    this._cursors.tail = 0;
+    this._head = 0;
+    this._tail = 0;
   }
 
   private _wrappingAdd(initial: number, addend: number) {
