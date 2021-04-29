@@ -124,7 +124,9 @@ for (let s of queue) {
 
 ## Under the hood
 
-This is implemented as a *ring buffer* This particular implementation was inspired a bit by Rust's [VecDeue](http://doc.rust-lang.org/1.51.0/std/collections/vec_deque/struct.VecDeque.html) (a **vec**tor-backed **d**ouble-**e**nded **que**ue), though `TrackedQueue` has a substantially smaller API surface than `VecDeque`.
+This is implemented as an *autotracked ring buffer*. This particular implementation was inspired a bit by Rust's [VecDeue](http://doc.rust-lang.org/1.51.0/std/collections/vec_deque/struct.VecDeque.html) (a **vec**tor-backed **d**ouble-**e**nded **que**ue), though `TrackedQueue` has a substantially smaller API surface than `VecDeque`.
+
+### The ring-buffer
 
 A ring-buffer is a good choice for a queue which requires fast access to items throughout it as well as fast append. While a naïve implementation of a queue might implement it in terms of a linked list, arbitrary item access for a linked list is O(N). A ring buffer, by contrast, has O(1) access for *any* item. The cost is a small amount of overhead for tracking the first and last items in the queue, as well as O(N) costs for making the queue contigous again.
 
@@ -412,6 +414,10 @@ We already have the capacity from construction. For our cursors, we can just tra
 Notice that throughout, the next item to insert is always simple a function of the capacity and the current cursor position, regardless of which operation we are doing. The memory and update overhead for the cursors is constant and tiny (just a number and a single wrapping addition or subtraction operation respectively).
 
 Read access to the array is similarly straightforward and cheap. It costs only one additional mathematical operation for access over direct array access: computing the offset from the start, using the capacity. When we want to access the third item in the queue with `queue.itemAt(someIndex)`, our backing storage can simply do `(start + someIndex) % capacity` to get the resulting index of the item.
+
+### Adding autotracking
+
+For the sake of using this in a Glimmer or Ember application, we want to schedule new renders whenever the queue changes. We can do this extremely cheaply: the only overhead is making the `tail` and `head` cursors `@tracked`. This lets us take advantage of the fact that the implementation *already* requires us to have these two values around for bookkeeping; it just connects that bookkeeping for the data structure to the bookkeeping for the reactivity system. This also guarantees correctness: because our bookkeeping for both is the same, if the public API works correctly, so does the reactivity layer!
 
 ## Contributing
 
