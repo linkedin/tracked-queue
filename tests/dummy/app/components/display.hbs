@@ -1,0 +1,9 @@
+<div class='container'>
+  <h2>{{@title}}</h2>
+  <p>Total length: {{@size}}</p>
+  <ul>
+    {{#each @values key='random' as |message|}}
+      <li>{{message.body}} (and random! {{message.random}})</li>
+    {{/each}}
+  </ul>
+</div>

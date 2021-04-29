@@ -1,0 +1,19 @@
+main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container {
+  overflow-y: scroll;
+  padding: 1em;
+  margin: 1em;
+  max-height: 400px;
+  min-width: 300px;
+  width: 20em;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+li:nth-child(2n) {
+  background-color: aliceblue;
+}
