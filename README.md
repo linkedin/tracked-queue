@@ -118,7 +118,7 @@ This is implemented as an *autotracked ring buffer*. This particular implementat
 
 ### The ring-buffer
 
-A ring-buffer is a good choice for a queue which requires fast access to items throughout it as well as fast append. While a naïve implementation of a queue might implement it in terms of a linked list, arbitrary item access for a linked list is O(N). A ring buffer, by contrast, has O(1) access for *any* item. The cost is a small amount of overhead for tracking the first and last items in the queue, as well as O(N) costs for making the queue contigous again.
+A ring-buffer is a good choice for a queue which requires fast access to items throughout it as well as fast enqueue and dequeue operations. A naïve implementation of a queue would us a linked list, which has *O(1)* enqueue and dequeue operations, but *O(N)* access for arbitrary items within the list. A ring buffer, by contrast, has *O(1)* access for any item *and* maintains *O(1)* access for enqueue and dequeue operations. It also has lower space usage than a linked list: a small and fixed amount of overhead for tracking the queue's capacity and indexes for the start and end of the queue and *O(N)* backing storage, vs. a linked list's *O(3N)* backing storage, with both the data and pointers for both neighbor nodes. Finally, a ring buffer will also be laid out contiguously in memory, so even operations which do traverse the whole list can be much faster.
 
 Let's see how this works. We create a queue with capacity 4:
 
