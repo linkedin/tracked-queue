@@ -60,14 +60,23 @@ class _TrackedQueue<T> {
     this._queue = Array.from({ length: this._cap });
   }
 
-  static of<A>(as: Array<A>): TrackedQueue<A> {
-    const queue = new TrackedQueue<A>({ capacity: as.length });
-    for (const a of as) {
+  /**
+    Create a new `TrackedQueue` from an existing array. The original array is
+    unchanged.
+
+    @param array The array of values with which to initialize the queue.
+    @returns a `TrackedQueue` of the same capacity as the original array, with
+      its items in the same order as in the original array
+   */
+  static of<A>(array: Array<A>): TrackedQueue<A> {
+    const queue = new TrackedQueue<A>({ capacity: array.length });
+    for (const a of array) {
       queue._pushBack(a);
     }
     return queue;
   }
 
+  /** The number of items in the queue. */
   get size(): number {
     const { _head: head, _tail: tail } = this;
     if (head == tail) {
@@ -385,11 +394,10 @@ class _TrackedQueue<T> {
   }
 }
 
-// These two types allow us to narrow effectively: when the queue is empty
-// (as indicated by a `Tag.Empty`), we *also* know that `front` and `back` are
-// `undefined` and that the `size` is `0` -- and vice versa: when the tag is
-// any *other* tag, we know that `front` and `back` are of type `T`
-// (that is: are *never* `undefined`)
+// These two types allow us to narrow effectively: when the queue is empty, we
+// *also* know that `front` and `back` are `undefined` and that the `size` is
+// `0` -- and vice versa: when the tag is any *other* tag, we know that `front`
+// and `back` are of type `T` (that is: are *never* `undefined`).
 export interface EmptyQueue<T> extends _TrackedQueue<T> {
   size: 0;
   front: undefined;
