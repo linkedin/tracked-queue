@@ -227,7 +227,7 @@ queue.pushBack(5);
 
 This has the same effect as rearranging the queue each time, but the cost of insertion for a new element is now constant and does not change with the size of the queue.
 
-To make this work, though, we have to introduce some bookkeeping so we know where to insert new elements. Specifically, we need to know:
+To make this work, we have to introduce some bookkeeping so we know where to insert new elements. Specifically, we need to know:
 
 - the capacity of the queue, and we have to know
 - the current front of the queue
@@ -239,6 +239,8 @@ We already have the capacity from construction. For tracking the front and back 
 - `head` always points to the next place to insert an item, which will also be the 0th, empty slot when the queue is empty
 
 Finally, notice that as described above, the `head` and `tail` would always overlap whenever the queue is full. That means that we would need to keep track of whether the queue is full to know whether overlapping `head` and `tail` means the queue is empty or not, which is important for knowing whether to move the `tail` when pushing to the back of the queue or not, as well as whether to pop an item from the current `tail` slot. If we give the queue's backing storage one additional slot over the capacity, then overlapping `head` and `tail` *only* happens when the queue is empty, so we get rid of that bookkeeping.
+
+This bookkeeping is not free, but it is fixed in size: no matter how large the ring-buffer is, the bookkeeping is still just the capacity and the two pointers! This keeps the performance of enqueue and removal constant in time, rather than dependent on the size of the queue. It also keeps the queue size linear!
 
 To see how this works, consider this sequence of pushes and pops on the front and back of the queue. Notice that throughout, the next item to insert is always simple a function of the capacity and the current cursor positions, regardless of which operation we are doing. Here `t` is the tail pointer and `h` is the head pointer.
 
