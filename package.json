@@ -1,13 +1,23 @@
 {
   "name": "tracked-queue",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.1.0",
+  "description": "An autotracked implementation of a double-ended queue, implemented as a ring-buffer backed by a native JavaScript array.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "typescript",
+    "queue",
+    "autotracking",
+    "glimmer",
+    "ember"
   ],
   "repository": "",
   "license": "MIT",
-  "author": "",
+  "contributors": [
+    {
+      "name": "Chris Krycho",
+      "email": "ckrycho@linkedin.com"
+    }
+  ],
   "directories": {
     "doc": "doc",
     "test": "tests"
