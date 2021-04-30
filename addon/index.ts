@@ -102,6 +102,7 @@ class _TrackedQueue<T> {
     return this.at(this._wrappingSub(this.size, 1));
   }
 
+  /** Does the queue have any items in it? */
   get isEmpty(): boolean {
     return this.size === 0;
   }
@@ -109,7 +110,6 @@ class _TrackedQueue<T> {
   // Creating a `Symbol.iterator` generator allows consumers to treat the
   // `TrackedQueue` as an iterable, natively using `for...of` and using template
   // constructs like `#each`. It also allows a trivial implementation of `map`.
-  // eslint-disable-next-line require-yield
   *[Symbol.iterator](): Generator<T, undefined> {
     for (let index = 0; index < this.size; index++) {
       yield this.at(index) as T;
@@ -158,6 +158,8 @@ class _TrackedQueue<T> {
 
     const result: T[] = [];
     for (let i = from; i < to; i++) {
+      // SAFETY: we know these are in range because of the assertion just above
+      // the loop. If we were out of range, the assertion would throw.
       result.push(this.at(i) as T);
     }
 
@@ -165,8 +167,8 @@ class _TrackedQueue<T> {
   }
 
   /**
-    Determines whether a queue includes a certain element, returning true or
-    false as appropriate. Uses object identity (`===`) for comparison.
+    Determines whether a queue includes a certain element. Uses object identity
+    (`===`) for comparison.
 
     @param value The value to search for.
     @note Worst case performance is *O(N)*.
@@ -202,7 +204,11 @@ class _TrackedQueue<T> {
     return this._pushBack(value)[1];
   }
 
-  // Implementation of pushBack which can be used safely internally.
+  // Implementation of `pushBack` which can be used safely internally: returns a
+  // `Maybe<T>` so that the backing storage can be "cleared" when an element is
+  // remove by setting that slot to `undefined`, but distinguishing between a
+  // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
+  // and a slot which is actually *empty*.
   _pushBack(value: T): Maybe<T> {
     const { _head: head, _tail: tail } = this;
 
@@ -212,6 +218,10 @@ class _TrackedQueue<T> {
 
     let popped: Maybe<T>;
     if (nextHead === tail) {
+      // SAFETY: we know that in this scenario, the `nextHead` equals the `tail`
+      // because the queue is *wrapping*. That means that we are displacing an
+      // item which has been set in the backing storage previously, which in
+      // turn means we can know that the cast `as T` is safe.
       popped = ['just', this._queue[tail] as T];
       this._queue[tail] = undefined;
       const nextTail = this._wrappingAdd(tail, 1);
@@ -236,14 +246,22 @@ class _TrackedQueue<T> {
     return this._pushFront(value)[1];
   }
 
-  // Implementation of pushBack which can be used safely internally.
+  // Implementation of `pushFront` which can be used safely internally: returns
+  // a `Maybe<T>` so that the backing storage can be "cleared" when an element
+  // is remove by setting that slot to `undefined`, but distinguishing between a
+  // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
+  // and a slot which is actually *empty*.
   _pushFront(value: T): Maybe<T> {
     const head = this._head;
-    const nextFront = this._wrappingSub(this._tail, 1);
+    const nextTail = this._wrappingSub(this._tail, 1);
 
     let popped: Maybe<T>;
-    if (nextFront === head) {
+    if (nextTail === head) {
       const nextHead = this._wrappingSub(head, 1);
+      // SAFETY: we know that in this scenario, the `nextTail` equals the `head`
+      // because the queue is *wrapping*. That means that we are displacing an
+      // item which has been set in the backing storage previously, which in
+      // turn means we can know that the cast `as T` is safe.
       popped = ['just', this._queue[nextHead] as T];
       this._queue[nextHead] = undefined;
       this._head = nextHead;
@@ -251,8 +269,8 @@ class _TrackedQueue<T> {
       popped = ['nothing', undefined];
     }
 
-    this._queue[nextFront] = value;
-    this._tail = nextFront;
+    this._queue[nextTail] = value;
+    this._tail = nextTail;
 
     return popped;
   }
@@ -295,8 +313,8 @@ class _TrackedQueue<T> {
    */
   append(values: T[]): T[] {
     const popped: T[] = [];
-    for (let i = 0; i < values.length; i++) {
-      const _popped = this._pushBack(values[i] as T);
+    for (const value of values) {
+      const _popped = this._pushBack(value);
       if (_popped[0] === 'just') {
         popped.push(_popped[1]);
       }
@@ -318,6 +336,10 @@ class _TrackedQueue<T> {
   prepend(values: T[]): T[] {
     const popped: T[] = [];
     for (let i = values.length - 1; i >= 0; i--) {
+      // SAFETY: the cast `as T` is safe because we are iterating values within
+      // the array `T[]`. This would be safer to do with `for...of`, as in
+      // `append`, but we cannot do that on the reverse of an array, and
+      // calling `.reverse()` would trigger a needless *O(N)* operation.
       const value = this._pushFront(values[i] as T);
       if (value[0] === 'just') {
         popped.unshift(value[1]);
@@ -368,14 +390,14 @@ class _TrackedQueue<T> {
 // `undefined` and that the `size` is `0` -- and vice versa: when the tag is
 // any *other* tag, we know that `front` and `back` are of type `T`
 // (that is: are *never* `undefined`)
-interface EmptyQueue<T> extends _TrackedQueue<T> {
+export interface EmptyQueue<T> extends _TrackedQueue<T> {
   size: 0;
   front: undefined;
   back: undefined;
   isEmpty: true;
 }
 
-interface PopulatedQueue<T> extends _TrackedQueue<T> {
+export interface PopulatedQueue<T> extends _TrackedQueue<T> {
   size: number;
   front: T;
   back: T;
@@ -385,10 +407,10 @@ interface PopulatedQueue<T> extends _TrackedQueue<T> {
 // Combined with the assignment and type cast below, this allows us to teach
 // TypeScript that, for its purposes, the class returns a `TrackedQueue` from
 // its default and static constructor.
-type TrackedQueueConstructor = {
+export interface TrackedQueueConstructor {
   new <T>({ capacity }: Config): TrackedQueue<T>;
   of: <T>(as: T[]) => TrackedQueue<T>;
-};
+}
 
 /**
   An autotracked ring-buffer-backed queue with `O(1)` insertion, deletion, and
