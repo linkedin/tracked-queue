@@ -114,7 +114,7 @@ This project uses native `Proxy` (via a dependency), and so is not compatible wi
 
 ## Under the hood
 
-This is implemented as an *autotracked ring buffer*. This particular implementation was inspired a bit by Rust's [VecDeue](http://doc.rust-lang.org/1.51.0/std/collections/vec_deque/struct.VecDeque.html) (a **vec**tor-backed **d**ouble-**e**nded **que**ue), though `TrackedQueue` has a substantially smaller API surface than `VecDeque`.
+This is implemented as an *autotracked ring buffer*. This particular implementation was inspired a bit by Rust's [`VecDeque`](http://doc.rust-lang.org/1.51.0/std/collections/vec_deque/struct.VecDeque.html), though `TrackedQueue` has a substantially smaller API surface than `VecDeque`.
 
 ### The ring-buffer
 
