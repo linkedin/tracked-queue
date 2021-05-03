@@ -3,6 +3,7 @@
 - [Overview](#overview)
 - [Methods](#methods)
 - [Properties](#properties)
+- [Iteration](#iteration)
 - [TypeScript Niceties](#typescript-niceties)
 
 ## Overview
@@ -84,6 +85,11 @@ interface TrackedQueue<T> {
 - **`back: T | undefined`:** The item at the end of the queue, that is, the item most recently pushed onto the back of the queue which has not been popped by pushing onto the front of the queue.
 
 - **`isEmpty: boolean`:** Does the queue have any items in it?
+
+
+## Iteration
+
+The queue also uses `Symbol.iterator` with a generator function to implement iterability, so you can consume it via the spread operator `...`, can pass it to any type which accepts an iterable like `Array.from`, and can use it with `for...of`.
 
 
 ## TypeScript Niceties
