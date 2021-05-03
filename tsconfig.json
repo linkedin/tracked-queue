@@ -22,8 +22,6 @@
       "tracked-queue/*": ["addon/*"],
       "tracked-queue/test-support": ["addon-test-support"],
       "tracked-queue/test-support/*": ["addon-test-support/*"],
-      "tracked-built-ins": ["../../pzuraq/tracked-built-ins/addon"],
-      "tracked-built-ins/*": ["../../pzuraq/tracked-built-ins/addon/*"],
       "*": ["types/*"]
     }
   },
