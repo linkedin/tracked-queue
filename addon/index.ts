@@ -145,9 +145,9 @@ class _TrackedQueue<T> {
 
   /**
     Get a range of values from within the queue, inclusive of `from` and
-    exclusive of `to`.
+    exclusive of `to`. As with `at`, the ranges are over a zero-indexed queue.
 
-    Given a queue of numbers `1, 2, 3`:
+    Given a queue of numbers `(1, 2, 3)`:
 
     ```ts
     let queue = new TrackedQueue<number>({ capacity:  3 });

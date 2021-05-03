@@ -6,13 +6,28 @@
 An [autotracked](https://v5.chriskrycho.com/journal/autotracking-elegant-dx-via-cutting-edge-cs/) implementation of a double-ended queue, implemented as a ring-buffer backed by a native JavaScript array, with optimal performance for all common operations:
 
 - *O(1)* push and pop from either end of the queue
-- *O(1)n* read from any element in the queue
+- *O(1)* read from any element in the queue
 - *O(N)* iteration of the whole queue
 - *O(N)* access to any range of size *N* within the queue
 - *O(N+X)* storage for a queue of size *N*, with *X* a fixed overhead on the order of a few tens of bytes:
   - backing storage of size `N`
   - a single capacity value
   - two pointers into the storage, with the additional cost of one Glimmer "tag" for each of them
+
+<!-- omit in toc -->
+## Contents
+
+- [Example](#example)
+- [Compatibility](#compatibility)
+  - [TypeScript](#typescript)
+  - [Browser support](#browser-support)
+- [Installation](#installation)
+- [API Docs](#api-docs)
+- [Under the hood](#under-the-hood)
+  - [The ring-buffer](#the-ring-buffer)
+  - [Adding autotracking](#adding-autotracking)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Example
 
@@ -110,6 +125,11 @@ This project uses native `Proxy` (via a dependency), and so is not compatible wi
     ```sh
     ember install tracked-queue
     ```
+
+
+## API Docs
+
+See [docs/API.md](./docs/API.md) for full API documentation.
 
 
 ## Under the hood
