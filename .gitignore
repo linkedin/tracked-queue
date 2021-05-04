@@ -27,3 +27,6 @@ tests/**/*.d.ts
 /.node_modules.ember-try/
 /bower.json.ember-try
 /package.json.ember-try
+
+# config
+*.sublime-workspace
