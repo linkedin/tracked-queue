@@ -3,6 +3,9 @@
 # compiled output
 /dist/
 /tmp/
+addon/**/*.d.ts
+app/**/*.d.ts
+tests/**/*.d.ts
 
 # dependencies
 /bower_components/
