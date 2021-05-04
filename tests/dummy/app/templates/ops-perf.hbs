@@ -1,6 +1,6 @@
 <div>
   <h2>measure:</h2>
-  <form {{on "submit" this.setOpCount}}>
+  <form aria-label="op count form" {{on "submit" this.setOpCount}}>
     <label>op count:
       <input
         name='op-count'
@@ -15,7 +15,7 @@
       100,000.
     </p>
   </form>
-    <form {{on "submit" this.setQueueSize}}>
+  <form aria-label="queue size form" {{on "submit" this.setQueueSize}}>
     <label>queue size:
       <input
         name='queue-size'
@@ -27,16 +27,16 @@
   </form>
   <hr/>
   <p>Run {{this.count}} iterations of operation with storage of size {{this.capacity}}:</p>
-  <button {{on "click" this.measurePushBack}} disabled={{this.measuring}}>
+  <button type='button' disabled={{this.measuring}} {{on "click" this.measurePushBack}}>
     <code>queue.pushBack</code> vs. <code>Array.prototype.push</code>
   </button>
-  <button {{on "click" this.measurePushFront}} disabled={{this.measuring}}>
+  <button type='button' disabled={{this.measuring}} {{on "click" this.measurePushFront}}>
     <code>queue.pushFront</code> vs. <code>Array.prototype.unshift</code>
   </button>
-  <button {{on "click" this.measurePopBack}} disabled={{this.measuring}}>
+  <button type='button' disabled={{this.measuring}} {{on "click" this.measurePopBack}}>
     <code>queue.popBack</code> vs. <code>Array.prototype.pop</code>
   </button>
-  <button {{on "click" this.measurePopFront}} disabled={{this.measuring}}>
+  <button type='button' disabled={{this.measuring}} {{on "click" this.measurePopFront}}>
     <code>queue.popFront</code> vs. <code>Array.prototype.shift</code>
   </button>
 </div>
