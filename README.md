@@ -32,7 +32,7 @@ Create a queue of a specified capacity, and then push items into it from existin
 
 ```ts
 // Create a queue with capacity 5, from an existing array of elements:
-import TrackedQueue from '@linkedin/tracked-queue';
+import TrackedQueue from 'tracked-queue';
 let queue = new TrackedQueue<string>({ capacity: 5 });
 
 queue.append(["alpha", "bravo", "charlie"]);

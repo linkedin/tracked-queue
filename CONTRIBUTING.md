@@ -19,7 +19,7 @@ be encrypted using PGP ([public key][pubkey]) and sent to
 
 ## Installation
 
-* `git clone <repository-url>`
+* `git clone @linkedin/tracked-queue`
 * `cd tracked-queue`
 * `yarn install`
 
