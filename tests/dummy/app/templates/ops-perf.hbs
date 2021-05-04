@@ -1,0 +1,66 @@
+<div>
+  <h2>measure:</h2>
+  <form {{on "submit" this.setOpCount}}>
+    <label>op count:
+      <input
+        name='op-count'
+        value={{this.count}}
+        type='number'
+      >
+    </label>
+    <button type='submit'>set</button>
+    <p>
+      <strong>Warning:</strong> for <code>unshift</code> and <code>shift</code>,
+      it is extremely easy to hang your browser tab with an op count much over
+      100,000.
+    </p>
+  </form>
+    <form {{on "submit" this.setQueueSize}}>
+    <label>queue size:
+      <input
+        name='queue-size'
+        value={{this.capacity}}
+        type='number'
+      >
+    </label>
+    <button type='submit'>set</button>
+  </form>
+  <hr/>
+  <p>Run {{this.count}} iterations of operation with storage of size {{this.capacity}}:</p>
+  <button {{on "click" this.measurePushBack}} disabled={{this.measuring}}>
+    <code>queue.pushBack</code> vs. <code>Array.prototype.push</code>
+  </button>
+  <button {{on "click" this.measurePushFront}} disabled={{this.measuring}}>
+    <code>queue.pushFront</code> vs. <code>Array.prototype.unshift</code>
+  </button>
+  <button {{on "click" this.measurePopBack}} disabled={{this.measuring}}>
+    <code>queue.popBack</code> vs. <code>Array.prototype.pop</code>
+  </button>
+  <button {{on "click" this.measurePopFront}} disabled={{this.measuring}}>
+    <code>queue.popFront</code> vs. <code>Array.prototype.shift</code>
+  </button>
+</div>
+
+<h2>Resulting sizes</h2>
+<ul>
+  <li>queue: {{this.queue.size}}</li>
+  <li>array: {{this.buffer.length}}</li>
+</ul>
+
+<h2>Start</h2>
+<ul>
+  <li>queue: {{this.queue.front}}</li>
+  <li>array: {{this.bufferFirst}}</li>
+</ul>
+
+<h2>End</h2>
+<ul>
+  <li>queue: {{this.queue.back}}</li>
+  <li>array: {{this.bufferLast}}</li>
+</ul>
+
+<h2>Performance</h2>
+{{#if this.result}}
+  Latest result:<br/>
+  <pre><code>{{this.result}}</code></pre>
+{{/if}}

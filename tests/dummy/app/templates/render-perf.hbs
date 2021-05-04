@@ -1,0 +1,9 @@
+<h1>demo!</h1>
+<main>
+  {{!-- <Display @title='all' @size={{this.bigQueue.size}} @values={{this.bigQueue}} /> --}}
+  <Display @title='range: 100 - 200' @size={{this.subset.length}} @values={{this.subset}} />
+  <Display @title='range: 990 - 1000' @size={{this.tinyWindow.length}} @values={{this.tinyWindow}} />
+  {{!-- <Display @title='range: 10 - 4990' @size={{this.bigWindow.length}} @values={{this.bigWindow}} /> --}}
+  <Display @title='last 10' @size={{this.tail.length}} @values={{this.tail}} />
+  <p>random value: {{this.randomValue.body}}</p>
+</main>
