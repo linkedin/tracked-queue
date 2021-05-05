@@ -6,10 +6,6 @@ class TrackedQueueError extends Error {
   }
 }
 
-interface Config {
-  capacity: number;
-}
-
 /**
   A very lightweight internal-only data structure so that we can distinguish
   between the cases where the value in the queue is `undefined` and where there
@@ -43,10 +39,9 @@ class _TrackedQueue<T> {
   /** Pointer to the start of the queue. */
   @tracked private _tail = 0;
 
-  constructor({ capacity }: Config) {
-    if (this.constructor !== _TrackedQueue) {
-      assert('cannot be subclassed');
-    }
+  constructor({ capacity }: { capacity: number }) {
+    if (this.constructor !== _TrackedQueue)
+      throw new TrackedQueueError('cannot be subclassed');
 
     if (capacity < 1) throw new TrackedQueueError('requires a capacity >= 1');
 
@@ -56,14 +51,8 @@ class _TrackedQueue<T> {
     this._queue = Array.from({ length: this._cap });
   }
 
-  /**
-    Create a new `TrackedQueue` from an existing array. The original array is
-    unchanged.
-
-    @param array The array of values with which to initialize the queue.
-    @returns a `TrackedQueue` of the same capacity as the original array, with
-      its items in the same order as in the original array
-   */
+  // Documented in `TrackedQueueConstructor` interface below so that it appears
+  // correctly in docs, hover, etc.
   static of<A>(array: Array<A>): TrackedQueue<A> {
     const queue = new TrackedQueue<A>({ capacity: array.length });
     for (const a of array) {
@@ -440,8 +429,27 @@ export interface PopulatedQueue<T> extends _TrackedQueue<T> {
 // TypeScript that, for its purposes, the class returns a `TrackedQueue` from
 // its default and static constructor.
 export interface TrackedQueueConstructor {
-  new <T>({ capacity }: Config): TrackedQueue<T>;
-  of: <T>(as: T[]) => TrackedQueue<T>;
+  new <T>({ capacity }: { capacity: number }): TrackedQueue<T>;
+  /**
+    Create a new `TrackedQueue` from an existing array. The original array is
+    unchanged, and the order of the original array is the same as the order of
+    the newly-created queue.
+
+    ## Example
+
+    ```ts
+    let a = [1, 2, 3];
+    let q = TrackedQueue.of(a);
+    q.at(0); // 1
+    q.at(1); // 2
+    q.at(2); // 3
+    ```
+
+    @param array The array of values with which to initialize the queue.
+    @returns a `TrackedQueue` of the same capacity as the original array, with
+      its items in the same order as in the original array
+   */
+  of: typeof _TrackedQueue['of'];
 }
 
 /**
