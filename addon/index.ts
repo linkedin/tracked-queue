@@ -382,6 +382,20 @@ class _TrackedQueue<T> {
     this._tail = 0;
   }
 
+  /**
+    Get a string representation of the queue.
+
+    For a queue of numbers with the values (1, 2, 3), the resulting string will
+    be `TrackedQueue(1, 2, 3)`. The representation of the items within the queue
+    is naive, and will simply be whatever their own `toString` produces.
+
+    @warning Since the result includes all items within the queue, the resulting
+      string may be very long.
+   */
+  toString(): string {
+    return `TrackedQueue(${[...this].join(', ')})`;
+  }
+
   private _wrappingAdd(initial: number, addend: number) {
     return (initial + addend) % this._cap;
   }

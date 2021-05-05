@@ -911,4 +911,48 @@ module('TrackedQueue', function (hooks) {
       );
     });
   });
+
+  module('`.toString()`', function () {
+    expectTypeOf<TrackedQueue<unknown>['toString']>().toEqualTypeOf<
+      () => string
+    >();
+
+    test('when the queue is empty', function (assert) {
+      const queue = new TrackedQueue<number>({ capacity: 10 });
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue()',
+        'it shows an empty queue'
+      );
+    });
+
+    test('when the queue has one item', function (assert) {
+      const queue = TrackedQueue.of([1]);
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue(1)',
+        'it shows the single item'
+      );
+    });
+
+    test('when the queue is full', function (assert) {
+      const queue = new TrackedQueue<number>({ capacity: 10 });
+      queue.append([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)',
+        'it shows all the item'
+      );
+    });
+
+    test('when the queue has wrapped', function (assert) {
+      const queue = new TrackedQueue<number>({ capacity: 5 });
+      queue.append([1, 2, 3, 4, 5, 6, 7]);
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue(3, 4, 5, 6, 7)',
+        'it shows the correct items in the correct order'
+      );
+    });
+  });
 });
