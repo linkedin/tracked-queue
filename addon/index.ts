@@ -77,7 +77,7 @@ class _TrackedQueue<T> {
   static of<A>(array: Array<A>): TrackedQueue<A> {
     const queue = new TrackedQueue<A>({ capacity: array.length });
     for (const a of array) {
-      queue._pushBack(a);
+      queue.pushBack(a);
     }
     return queue;
   }
@@ -236,7 +236,7 @@ class _TrackedQueue<T> {
   // remove by setting that slot to `undefined`, but distinguishing between a
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
-  _pushBack(value: T): Maybe<T> {
+  private _pushBack(value: T): Maybe<T> {
     const { _head: head, _tail: tail } = this;
 
     const nextHead = this._wrappingAdd(head, 1);
@@ -278,7 +278,7 @@ class _TrackedQueue<T> {
   // is remove by setting that slot to `undefined`, but distinguishing between a
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
-  _pushFront(value: T): Maybe<T> {
+  private _pushFront(value: T): Maybe<T> {
     const head = this._head;
     const nextTail = this._wrappingSub(this._tail, 1);
 
@@ -388,7 +388,7 @@ class _TrackedQueue<T> {
   map<U>(fn: (t: T) => U): TrackedQueue<U> {
     const result = new TrackedQueue<U>({ capacity: this._cap - 1 });
     for (const a of this) {
-      result._pushBack(fn(a));
+      result.pushBack(fn(a));
     }
     return result;
   }

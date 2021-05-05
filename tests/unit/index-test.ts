@@ -6,6 +6,13 @@ import { expectTypeOf } from 'expect-type';
 module('TrackedQueue', function (hooks) {
   setupTest(hooks);
 
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_pushBack');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_popBack');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_head');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_tail');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_queue');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_cap');
+
   test('constructor', function (assert) {
     expectTypeOf(TrackedQueue).toBeConstructibleWith({ capacity: 12 });
     expectTypeOf(TrackedQueue).constructorParameters.toEqualTypeOf<
