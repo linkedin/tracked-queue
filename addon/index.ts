@@ -429,6 +429,12 @@ export interface PopulatedQueue<T> extends _TrackedQueue<T> {
 // TypeScript that, for its purposes, the class returns a `TrackedQueue` from
 // its default and static constructor.
 export interface TrackedQueueConstructor {
+  /**
+    An autotracked ring-buffer-backed queue with `O(1)` insertion, deletion, and
+    access, and `O(N)` reordering.
+
+    @param capacity The size of the queue.
+   */
   new <T>({ capacity }: { capacity: number }): TrackedQueue<T>;
   /**
     Create a new `TrackedQueue` from an existing array. The original array is
