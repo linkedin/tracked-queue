@@ -15,8 +15,11 @@ An [autotracked](https://v5.chriskrycho.com/journal/autotracking-elegant-dx-via-
   - a single capacity value
   - two pointers into the storage, with the additional cost of one Glimmer "tag" for each of them
 
-<!-- omit in toc -->
+This is handy for cases where you need to be able to push items onto and pop items off of either end of a queue of a fixed size, especially where you want to be able to have fast reads from anywhere in the queue.
 
+For example, if you have a stream of events coming across a websocket connection, which you want to display to a user, but you only ever want to keep 1,000 of them in memory at any given time, this allows you to simply push onto the back of the queue as new items come in, with no need to manually manage the front of the queue to maintain the queue size.
+
+<!-- omit in toc -->
 ## Contents
 
 - [Example](#example)
