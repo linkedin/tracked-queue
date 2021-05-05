@@ -1,15 +1,9 @@
 import { tracked } from '@glimmer/tracking';
 
-function assert(desc: string): never;
-function assert(desc: string, pred: unknown): asserts pred;
-function assert(desc: string, pred?: unknown): asserts pred {
-  if (!pred) {
-    throw new Error(`TrackedQueue: ${desc}`);
+class TrackedQueueError extends Error {
+  constructor(message: string) {
+    super(`TrackedQueue: ${message}`);
   }
-}
-
-interface Config {
-  capacity: number;
 }
 
 /**
@@ -45,14 +39,11 @@ class _TrackedQueue<T> {
   /** Pointer to the start of the queue. */
   @tracked private _tail = 0;
 
-  constructor({ capacity }: Config) {
-    if (this.constructor !== _TrackedQueue) {
-      assert('cannot be subclassed');
-    }
+  constructor({ capacity }: { capacity: number }) {
+    if (this.constructor !== _TrackedQueue)
+      throw new TrackedQueueError('cannot be subclassed');
 
-    if (capacity < 1) {
-      assert('requires a capacity >= 1');
-    }
+    if (capacity < 1) throw new TrackedQueueError('requires a capacity >= 1');
 
     // The storage has one extra slot in it so that once we are pushing items on
     // either end, the head and tail are never overlapping.
@@ -60,18 +51,12 @@ class _TrackedQueue<T> {
     this._queue = Array.from({ length: this._cap });
   }
 
-  /**
-    Create a new `TrackedQueue` from an existing array. The original array is
-    unchanged.
-
-    @param array The array of values with which to initialize the queue.
-    @returns a `TrackedQueue` of the same capacity as the original array, with
-      its items in the same order as in the original array
-   */
+  // Documented in `TrackedQueueConstructor` interface below so that it appears
+  // correctly in docs, hover, etc.
   static of<A>(array: Array<A>): TrackedQueue<A> {
     const queue = new TrackedQueue<A>({ capacity: array.length });
     for (const a of array) {
-      queue._pushBack(a);
+      queue.pushBack(a);
     }
     return queue;
   }
@@ -86,7 +71,9 @@ class _TrackedQueue<T> {
     } else if (head < tail) {
       return head + (this._cap - tail);
     } else {
-      assert('unreachable');
+      throw new TrackedQueueError(
+        'unreachable: already checked all head/tail relations'
+      );
     }
   }
 
@@ -160,15 +147,27 @@ class _TrackedQueue<T> {
       `to > size`
    */
   range({ from, to }: { from: number; to: number }): T[] {
-    assert(
-      `can only access items in bounds, 0 to ${this.size}`,
-      from >= 0 && from < this.size && to >= 0 && to <= this.size && to > from
-    );
+    if (this.isEmpty)
+      throw new TrackedQueueError(
+        'range: cannot get a range when the queue is empty'
+      );
+    if (from > to)
+      throw new TrackedQueueError(
+        `range: 'from' must be less than 'to', but 'from' was ${from} and 'to' was ${to}`
+      );
+    if (from < 0 || from >= this.size)
+      throw new TrackedQueueError(
+        `range: 'from' must be in 0 < ${this.size}, but was ${from}`
+      );
+    if (to < 1 || to > this.size)
+      throw new TrackedQueueError(
+        `range: 'to' must be in 1 <= ${this.size}, but was ${to}`
+      );
 
     const result: T[] = [];
     for (let i = from; i < to; i++) {
       // SAFETY: we know these are in range because of the assertion just above
-      // the loop. If we were out of range, the assertion would throw.
+      // the loop. If we were out of range, one of the assertions would throw.
       result.push(this.at(i) as T);
     }
 
@@ -218,7 +217,7 @@ class _TrackedQueue<T> {
   // remove by setting that slot to `undefined`, but distinguishing between a
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
-  _pushBack(value: T): Maybe<T> {
+  private _pushBack(value: T): Maybe<T> {
     const { _head: head, _tail: tail } = this;
 
     const nextHead = this._wrappingAdd(head, 1);
@@ -260,7 +259,7 @@ class _TrackedQueue<T> {
   // is remove by setting that slot to `undefined`, but distinguishing between a
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
-  _pushFront(value: T): Maybe<T> {
+  private _pushFront(value: T): Maybe<T> {
     const head = this._head;
     const nextTail = this._wrappingSub(this._tail, 1);
 
@@ -370,7 +369,7 @@ class _TrackedQueue<T> {
   map<U>(fn: (t: T) => U): TrackedQueue<U> {
     const result = new TrackedQueue<U>({ capacity: this._cap - 1 });
     for (const a of this) {
-      result._pushBack(fn(a));
+      result.pushBack(fn(a));
     }
     return result;
   }
@@ -380,6 +379,20 @@ class _TrackedQueue<T> {
     this._queue = Array.from({ length: this._cap });
     this._head = 0;
     this._tail = 0;
+  }
+
+  /**
+    Get a string representation of the queue.
+
+    For a queue of numbers with the values (1, 2, 3), the resulting string will
+    be `TrackedQueue(1, 2, 3)`. The representation of the items within the queue
+    is naive, and will simply be whatever their own `toString` produces.
+
+    @warning Since the result includes all items within the queue, the resulting
+      string may be very long.
+   */
+  toString(): string {
+    return `TrackedQueue(${[...this].join(', ')})`;
   }
 
   private _wrappingAdd(initial: number, addend: number) {
@@ -416,8 +429,33 @@ export interface PopulatedQueue<T> extends _TrackedQueue<T> {
 // TypeScript that, for its purposes, the class returns a `TrackedQueue` from
 // its default and static constructor.
 export interface TrackedQueueConstructor {
-  new <T>({ capacity }: Config): TrackedQueue<T>;
-  of: <T>(as: T[]) => TrackedQueue<T>;
+  /**
+    An autotracked ring-buffer-backed queue with `O(1)` insertion, deletion, and
+    access, and `O(N)` reordering.
+
+    @param capacity The size of the queue.
+   */
+  new <T>({ capacity }: { capacity: number }): TrackedQueue<T>;
+  /**
+    Create a new `TrackedQueue` from an existing array. The original array is
+    unchanged, and the order of the original array is the same as the order of
+    the newly-created queue.
+
+    ## Example
+
+    ```ts
+    let a = [1, 2, 3];
+    let q = TrackedQueue.of(a);
+    q.at(0); // 1
+    q.at(1); // 2
+    q.at(2); // 3
+    ```
+
+    @param array The array of values with which to initialize the queue.
+    @returns a `TrackedQueue` of the same capacity as the original array, with
+      its items in the same order as in the original array
+   */
+  of: typeof _TrackedQueue['of'];
 }
 
 /**

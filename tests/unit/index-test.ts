@@ -6,6 +6,13 @@ import { expectTypeOf } from 'expect-type';
 module('TrackedQueue', function (hooks) {
   setupTest(hooks);
 
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_pushBack');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_popBack');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_head');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_tail');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_queue');
+  expectTypeOf<TrackedQueue<unknown>>().not.toHaveProperty('_cap');
+
   test('constructor', function (assert) {
     expectTypeOf(TrackedQueue).toBeConstructibleWith({ capacity: 12 });
     expectTypeOf(TrackedQueue).constructorParameters.toEqualTypeOf<
@@ -490,7 +497,10 @@ module('TrackedQueue', function (hooks) {
       const queue = new TrackedQueue({ capacity: 10 });
       assert.throws(
         () => queue.range({ from: 1, to: 3 }),
-        new Error('TrackedQueue: can only access items in bounds, 0 to 0')
+        (error: Error) =>
+          error.message ===
+          'TrackedQueue: range: cannot get a range when the queue is empty',
+        'cannot get a range when the queue is empty'
       );
     });
 
@@ -505,11 +515,17 @@ module('TrackedQueue', function (hooks) {
 
       assert.throws(
         () => queue.range({ from: 0, to: 2 }),
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'to' must be in 1 <= 1, but was 2",
         'a range from 0 to n > 1 throws'
       );
 
       assert.throws(
         () => queue.range({ from: 1, to: 0 }),
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'from' must be less than 'to', but 'from' was 1 and 'to' was 0",
         'a range with `from` > `to` throws'
       );
     });
@@ -541,12 +557,18 @@ module('TrackedQueue', function (hooks) {
 
       assert.throws(
         () => queue.range({ from: 1, to: 0 }),
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'from' must be less than 'to', but 'from' was 1 and 'to' was 0",
         'a range with `from` > `to` throws'
       );
 
       assert.throws(
         () => queue.range({ from: 0, to: 5 }),
-        'a range from 0 to n > 1 throws'
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'to' must be in 1 <= 4, but was 5",
+        'a range from 0 to n > capacity throws'
       );
     });
   });
@@ -908,6 +930,50 @@ module('TrackedQueue', function (hooks) {
         popped,
         source,
         'the popped values includes `undefined`'
+      );
+    });
+  });
+
+  module('`.toString()`', function () {
+    expectTypeOf<TrackedQueue<unknown>['toString']>().toEqualTypeOf<
+      () => string
+    >();
+
+    test('when the queue is empty', function (assert) {
+      const queue = new TrackedQueue<number>({ capacity: 10 });
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue()',
+        'it shows an empty queue'
+      );
+    });
+
+    test('when the queue has one item', function (assert) {
+      const queue = TrackedQueue.of([1]);
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue(1)',
+        'it shows the single item'
+      );
+    });
+
+    test('when the queue is full', function (assert) {
+      const queue = new TrackedQueue<number>({ capacity: 10 });
+      queue.append([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)',
+        'it shows all the item'
+      );
+    });
+
+    test('when the queue has wrapped', function (assert) {
+      const queue = new TrackedQueue<number>({ capacity: 5 });
+      queue.append([1, 2, 3, 4, 5, 6, 7]);
+      assert.equal(
+        queue.toString(),
+        'TrackedQueue(3, 4, 5, 6, 7)',
+        'it shows the correct items in the correct order'
       );
     });
   });
