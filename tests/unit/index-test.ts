@@ -490,7 +490,10 @@ module('TrackedQueue', function (hooks) {
       const queue = new TrackedQueue({ capacity: 10 });
       assert.throws(
         () => queue.range({ from: 1, to: 3 }),
-        new Error('TrackedQueue: can only access items in bounds, 0 to 0')
+        (error: Error) =>
+          error.message ===
+          'TrackedQueue: range: cannot get a range when the queue is empty',
+        'cannot get a range when the queue is empty'
       );
     });
 
@@ -505,11 +508,17 @@ module('TrackedQueue', function (hooks) {
 
       assert.throws(
         () => queue.range({ from: 0, to: 2 }),
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'to' must be in 1 <= 1, but was 2",
         'a range from 0 to n > 1 throws'
       );
 
       assert.throws(
         () => queue.range({ from: 1, to: 0 }),
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'from' must be less than 'to', but 'from' was 1 and 'to' was 0",
         'a range with `from` > `to` throws'
       );
     });
@@ -541,12 +550,18 @@ module('TrackedQueue', function (hooks) {
 
       assert.throws(
         () => queue.range({ from: 1, to: 0 }),
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'from' must be less than 'to', but 'from' was 1 and 'to' was 0",
         'a range with `from` > `to` throws'
       );
 
       assert.throws(
         () => queue.range({ from: 0, to: 5 }),
-        'a range from 0 to n > 1 throws'
+        (error: Error) =>
+          error.message ===
+          "TrackedQueue: range: 'to' must be in 1 <= 4, but was 5",
+        'a range from 0 to n > capacity throws'
       );
     });
   });

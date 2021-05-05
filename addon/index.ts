@@ -8,6 +8,12 @@ function assert(desc: string, pred?: unknown): asserts pred {
   }
 }
 
+class TrackedQueueError extends Error {
+  constructor(message: string) {
+    super(`TrackedQueue: ${message}`);
+  }
+}
+
 interface Config {
   capacity: number;
 }
@@ -160,15 +166,27 @@ class _TrackedQueue<T> {
       `to > size`
    */
   range({ from, to }: { from: number; to: number }): T[] {
-    assert(
-      `can only access items in bounds, 0 to ${this.size}`,
-      from >= 0 && from < this.size && to >= 0 && to <= this.size && to > from
-    );
+    if (this.isEmpty)
+      throw new TrackedQueueError(
+        'range: cannot get a range when the queue is empty'
+      );
+    if (from > to)
+      throw new TrackedQueueError(
+        `range: 'from' must be less than 'to', but 'from' was ${from} and 'to' was ${to}`
+      );
+    if (from < 0 || from >= this.size)
+      throw new TrackedQueueError(
+        `range: 'from' must be in 0 < ${this.size}, but was ${from}`
+      );
+    if (to < 1 || to > this.size)
+      throw new TrackedQueueError(
+        `range: 'to' must be in 1 <= ${this.size}, but was ${to}`
+      );
 
     const result: T[] = [];
     for (let i = from; i < to; i++) {
       // SAFETY: we know these are in range because of the assertion just above
-      // the loop. If we were out of range, the assertion would throw.
+      // the loop. If we were out of range, one of the assertions would throw.
       result.push(this.at(i) as T);
     }
 
