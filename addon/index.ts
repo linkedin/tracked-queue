@@ -1,13 +1,5 @@
 import { tracked } from '@glimmer/tracking';
 
-function assert(desc: string): never;
-function assert(desc: string, pred: unknown): asserts pred;
-function assert(desc: string, pred?: unknown): asserts pred {
-  if (!pred) {
-    throw new Error(`TrackedQueue: ${desc}`);
-  }
-}
-
 class TrackedQueueError extends Error {
   constructor(message: string) {
     super(`TrackedQueue: ${message}`);
@@ -56,9 +48,7 @@ class _TrackedQueue<T> {
       assert('cannot be subclassed');
     }
 
-    if (capacity < 1) {
-      assert('requires a capacity >= 1');
-    }
+    if (capacity < 1) throw new TrackedQueueError('requires a capacity >= 1');
 
     // The storage has one extra slot in it so that once we are pushing items on
     // either end, the head and tail are never overlapping.
@@ -92,7 +82,9 @@ class _TrackedQueue<T> {
     } else if (head < tail) {
       return head + (this._cap - tail);
     } else {
-      assert('unreachable');
+      throw new TrackedQueueError(
+        'unreachable: already checked all head/tail relations'
+      );
     }
   }
 
