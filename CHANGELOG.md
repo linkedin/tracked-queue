@@ -1,5 +1,7 @@
 ## v1.0.0 (2021-05-10)
 
+An [autotracked](https://v5.chriskrycho.com/journal/autotracking-elegant-dx-via-cutting-edge-cs/) implementation of a double-ended queue, implemented as a ring-buffer backed by a native JavaScript array, with optimal performance for all common operations.
+
 #### :memo: Documentation
 * [#4](https://github.com/linkedin/tracked-queue/pull/4) Temporarily hide the TS nightly run ([@chriskrycho](https://github.com/chriskrycho))
 * [#4](https://github.com/linkedin/tracked-queue/pull/4) Temporarily hide the TS nightly run ([@chriskrycho](https://github.com/chriskrycho))
