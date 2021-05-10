@@ -10,7 +10,7 @@
     "glimmer",
     "ember"
   ],
-  "repository": "",
+  "repository": "https://github.com/linkedin/tracked-queue",
   "license": "BSD-2-Clause",
   "contributors": [
     {
