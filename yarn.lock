@@ -1073,7 +1073,7 @@
     debug "^4.1.0"
     globals "^11.1.0"
 
-"@babel/types@^7.1.6", "@babel/types@^7.12.1", "@babel/types@^7.12.13", "@babel/types@^7.13.0", "@babel/types@^7.13.12", "@babel/types@^7.13.14", "@babel/types@^7.13.16", "@babel/types@^7.13.17", "@babel/types@^7.4.4", "@babel/types@^7.7.0", "@babel/types@^7.7.2":
+"@babel/types@^7.1.6", "@babel/types@^7.12.1", "@babel/types@^7.12.13", "@babel/types@^7.13.0", "@babel/types@^7.13.12", "@babel/types@^7.13.14", "@babel/types@^7.13.16", "@babel/types@^7.13.17", "@babel/types@^7.4.4", "@babel/types@^7.7.0":
   version "7.13.17"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.13.17.tgz#48010a115c9fba7588b4437dd68c9469012b38b4"
   integrity sha512-RawydLgxbOPDlTLJNtoIypwdmAy//uQIzlKt2+iBiJaRlVuI6QLUxVAyWGNfOzp8Yu4L4lLIacoCyTNtpb4wiA==
@@ -1081,7 +1081,7 @@
     "@babel/helper-validator-identifier" "^7.12.11"
     to-fast-properties "^2.0.0"
 
-"@babel/types@^7.14.5":
+"@babel/types@^7.14.5", "@babel/types@^7.7.2":
   version "7.14.5"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.14.5.tgz#3bb997ba829a2104cedb20689c4a5b8121d383ff"
   integrity sha512-M/NzBpEL95I5Hh4dwhin5JlE7EzO5PHMAuzjxss3tiOBD46KfQvVedN/3jEPZvdRvtsK2222XfdHogNIttFgcg==
@@ -1205,6 +1205,31 @@
     lodash "^4.17.10"
     resolve "^1.8.1"
     semver "^7.3.2"
+
+"@embroider/macros@^0.42.3":
+  version "0.42.3"
+  resolved "https://registry.yarnpkg.com/@embroider/macros/-/macros-0.42.3.tgz#eb4dc35c43f1cb1d14298219ba037f8cead06081"
+  integrity sha512-4I+Sde8FU7QMwNQ3gYtj8fdBTqUeoPDn61XuV4Xng7p9LszQksGDXtyEhWrf9KWU3G+NtrZotY5LICd5P+E3tw==
+  dependencies:
+    "@embroider/shared-internals" "0.42.3"
+    assert-never "^1.2.1"
+    ember-cli-babel "^7.26.6"
+    lodash "^4.17.21"
+    resolve "^1.20.0"
+    semver "^7.3.2"
+
+"@embroider/shared-internals@0.42.3":
+  version "0.42.3"
+  resolved "https://registry.yarnpkg.com/@embroider/shared-internals/-/shared-internals-0.42.3.tgz#65224fe86c55790417078b267add8f54148b59e3"
+  integrity sha512-AIFRumaGxzhzzSswtk97Z0ttu0dyRhXoDuOi6kPYHoprUdtt7biRAksrsbutWWdFapve7vKHFZdYVuiG8IbX0A==
+  dependencies:
+    ember-rfc176-data "^0.3.17"
+    fs-extra "^9.1.0"
+    lodash "^4.17.21"
+    pkg-up "^3.1.0"
+    resolve-package-path "^4.0.1"
+    semver "^7.3.5"
+    typescript-memoize "^1.0.1"
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
@@ -2583,7 +2608,7 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-assert-never@^1.1.0:
+assert-never@^1.1.0, assert-never@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/assert-never/-/assert-never-1.2.1.tgz#11f0e363bf146205fb08193b5c7b90f4d1cf44fe"
   integrity sha512-TaTivMB6pYI1kXwrFlEhLeGfOqoDNdTxjCdwRfFFkEA30Eu+k48W34nlok2EYWJfFFzqaEmichdNM7th6M5HNw==
@@ -5523,7 +5548,7 @@ ember-cli-babel@^6.0.0-beta.4:
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^7.0.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.2, ember-cli-babel@^7.26.5, ember-cli-babel@^7.26.6, ember-cli-babel@^7.7.3:
+ember-cli-babel@^7.0.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.22.1, ember-cli-babel@^7.23.0, ember-cli-babel@^7.23.1, ember-cli-babel@^7.26.2, ember-cli-babel@^7.26.3, ember-cli-babel@^7.26.5, ember-cli-babel@^7.26.6, ember-cli-babel@^7.7.3:
   version "7.26.6"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.26.6.tgz#322fbbd3baad9dd99e3276ff05bc6faef5e54b39"
   integrity sha512-040svtfj2RC35j/WMwdWJFusZaXmNoytLAMyBDGLMSlRvznudTxZjGlPV6UupmtTBApy58cEF8Fq4a+COWoEmQ==
@@ -6011,6 +6036,14 @@ ember-template-recast@^5.0.3:
     slash "^3.0.0"
     tmp "^0.2.1"
     workerpool "^6.1.4"
+
+ember-tracked-storage-polyfill@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ember-tracked-storage-polyfill/-/ember-tracked-storage-polyfill-1.0.0.tgz#84d307a1e4badc5f84dca681db2cfea9bdee8a77"
+  integrity sha512-eL7lZat68E6P/D7b9UoTB5bB5Oh/0aju0Z7PCMi3aTwhaydRaxloE7TGrTRYU+NdJuyNVZXeGyxFxn2frvd3TA==
+  dependencies:
+    ember-cli-babel "^7.26.3"
+    ember-cli-htmlbars "^5.7.1"
 
 ember-try-config@^3.0.0:
   version "3.0.0"
@@ -11304,6 +11337,13 @@ resolve-package-path@^3.1.0:
     path-root "^0.1.1"
     resolve "^1.17.0"
 
+resolve-package-path@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-4.0.1.tgz#0e77271e06c8cc41740d28ef974806a77fdc8880"
+  integrity sha512-2gb/yU2fSfX22pjDYyevzyOKK9q72XKUFqlAsrfPzZArM4JkIH/Qcme4n3EbaZttObWm/fIFLbPxrXIyiL8wdQ==
+  dependencies:
+    path-root "^0.1.1"
+
 resolve-path@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/resolve-path/-/resolve-path-1.4.0.tgz#c4bda9f5efb2fce65247873ab36bb4d834fe16f7"
@@ -12731,7 +12771,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript-memoize@^1.0.0-alpha.3:
+typescript-memoize@^1.0.0-alpha.3, typescript-memoize@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/typescript-memoize/-/typescript-memoize-1.0.1.tgz#0a8199aa28f6fe18517f6e9308ef7bfbe9a98d59"
   integrity sha512-oJNge1qUrOK37d5Y6Ly2txKeuelYVsFtNF6U9kXIN7juudcQaHJQg2MxLOy0CqtkW65rVDYuTCOjnSIVPd8z3w==
