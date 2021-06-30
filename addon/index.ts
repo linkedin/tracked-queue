@@ -95,7 +95,7 @@ class _TrackedQueue<T> {
     front of the queue.
    */
   get back(): T | undefined {
-    return this.at(this._wrappingSub(this.size, 1));
+    return this.at(_wrappingSub(this.size, 1, this._cap));
   }
 
   /** Does the queue have any items in it? */
@@ -218,9 +218,9 @@ class _TrackedQueue<T> {
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
   private _pushBack(value: T): Maybe<T> {
-    const { _head: head, _tail: tail } = this;
+    const { _head: head, _tail: tail, _cap: cap } = this;
 
-    const nextHead = this._wrappingAdd(head, 1);
+    const nextHead = _wrappingAdd(head, 1, cap);
     this._queue[head] = value;
     this._head = nextHead;
 
@@ -232,7 +232,7 @@ class _TrackedQueue<T> {
       // turn means we can know that the cast `as T` is safe.
       popped = ['just', this._queue[tail] as T];
       this._queue[tail] = undefined;
-      const nextTail = this._wrappingAdd(tail, 1);
+      const nextTail = _wrappingAdd(tail, 1, cap);
       this._tail = nextTail;
     } else {
       popped = ['nothing', undefined];
@@ -261,11 +261,11 @@ class _TrackedQueue<T> {
   // and a slot which is actually *empty*.
   private _pushFront(value: T): Maybe<T> {
     const head = this._head;
-    const nextTail = this._wrappingSub(this._tail, 1);
+    const nextTail = _wrappingSub(this._tail, 1, this._cap);
 
     let popped: Maybe<T>;
     if (nextTail === head) {
-      const nextHead = this._wrappingSub(head, 1);
+      const nextHead = _wrappingSub(head, 1, this._cap);
       // SAFETY: we know that in this scenario, the `nextTail` equals the `head`
       // because the queue is *wrapping*. That means that we are displacing an
       // item which has been set in the backing storage previously, which in
@@ -290,7 +290,7 @@ class _TrackedQueue<T> {
     }
 
     const head = this._head;
-    const nextHead = this._wrappingSub(head, 1);
+    const nextHead = _wrappingSub(head, 1, this._cap);
 
     const popped = this.back;
     this._queue[head] = undefined;
@@ -305,7 +305,7 @@ class _TrackedQueue<T> {
     }
 
     const { _tail } = this;
-    const nextTail = this._wrappingAdd(_tail, 1);
+    const nextTail = _wrappingAdd(_tail, 1, this._cap);
 
     const popped = this.front;
     this._queue[_tail] = undefined;
@@ -394,17 +394,17 @@ class _TrackedQueue<T> {
   toString(): string {
     return `TrackedQueue(${[...this].join(', ')})`;
   }
+}
 
-  private _wrappingAdd(initial: number, addend: number) {
-    return (initial + addend) % this._cap;
-  }
+function _wrappingAdd(initial: number, addend: number, capacity: number) {
+  return (initial + addend) % capacity;
+}
 
-  private _wrappingSub(initial: number, subtrahend: number) {
-    const basicResult = initial - subtrahend;
-    // `+` not `-` when interacting with `max` because `result` is negative!
-    const newValue = basicResult < 0 ? this._cap + basicResult : basicResult;
-    return newValue % this._cap;
-  }
+function _wrappingSub(initial: number, subtrahend: number, capacity: number) {
+  const basicResult = initial - subtrahend;
+  // `+` not `-` when interacting with `max` because `result` is negative!
+  const newValue = basicResult < 0 ? capacity + basicResult : basicResult;
+  return newValue % capacity;
 }
 
 // These two types allow us to narrow effectively: when the queue is empty, we
