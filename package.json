@@ -39,6 +39,7 @@
     "postpack": "ember ts:clean"
   },
   "dependencies": {
+    "@embroider/macros": "^0.42.3",
     "ember-cli-babel": "^7.26.5",
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-typescript": "^4.1.0"
@@ -89,6 +90,7 @@
     "ember-source": "~3.27.0",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^3.4.0",
+    "ember-tracked-storage-polyfill": "^1.0.0",
     "ember-try": "^1.4.0",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",

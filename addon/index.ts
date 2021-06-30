@@ -1,10 +1,72 @@
-import { tracked } from '@glimmer/tracking';
+import {
+  createStorage,
+  getValue,
+  setValue,
+  TrackedStorage,
+} from 'ember-tracked-storage-polyfill';
+import { macroCondition, dependencySatisfies } from '@embroider/macros';
 
 class TrackedQueueError extends Error {
   constructor(message: string) {
     super(`TrackedQueue: ${message}`);
   }
 }
+
+//#region Tracked Storage Handling
+
+// This is a workaround for two Ember version issues we need to manage:
+//
+// - Prior to Ember 3.22, iteration (via `Symbol.iterator` as in this class or
+//   using `forEach` for a legacy behavior, not used here) is not properly
+//   autotracked, and so it must be managed automatically.
+// - From 3.27 up, the `Ember` global doesn't exist, and so this would error if
+//   it were unguarded.
+//
+// Happily, these can both be solved together, by using Embroider's macro system
+// to simply use the tracked storage primitives directly on Ember >= 3.22.
+
+let consumeCollection: (q: _TrackedQueue) => void;
+let dirtyCollection: (q: _TrackedQueue) => void;
+
+// These do not exist in any way at runtime or even as part of the build once
+// the Babel TS transform has run. They're purely type declarations, which are
+// erased by that transform. Accordingly, they will not trigger any errors or
+// warnings even in the build.
+import type EmberNamespace from 'ember';
+declare const Ember: typeof EmberNamespace | undefined;
+
+if (macroCondition(dependencySatisfies('ember-source', '< 3.22.0-alpha.1'))) {
+  type NotifyCollection = { '[]': unknown };
+
+  if (typeof Ember !== 'undefined') {
+    /* eslint-disable ember/new-module-imports */
+    consumeCollection = (q) =>
+      Ember.get(q as unknown as NotifyCollection, '[]');
+    dirtyCollection = (q) =>
+      Ember.notifyPropertyChange(q as unknown as NotifyCollection, '[]');
+    /* eslint-enable ember/new-module-imports */
+  }
+} else {
+  const COLLECTION_STORAGE = new WeakMap<
+    _TrackedQueue,
+    TrackedStorage<_TrackedQueue>
+  >();
+
+  // eslint-disable-next-line no-inner-declarations
+  function getOrCreateStorage(q: _TrackedQueue) {
+    let storage = COLLECTION_STORAGE.get(q);
+    if (storage === undefined) {
+      storage = createStorage(q, () => false);
+      COLLECTION_STORAGE.set(q, storage);
+    }
+
+    return storage;
+  }
+
+  consumeCollection = (q) => getValue(getOrCreateStorage(q));
+  dirtyCollection = (q) => setValue(getOrCreateStorage(q), q);
+}
+//#endregion
 
 /**
   A very lightweight internal-only data structure so that we can distinguish
@@ -25,19 +87,47 @@ type Maybe<T> = ['just', T] | ['nothing', undefined];
       - methods for updating the state of the queue
       - operator methods for generating new queues
       - internal utilities
+
+  There are two logical notions of the internal state data:
+
+  - the `_head` and `_tail` cursors, which are untracked
+  - tracked storage for the state of the collection as a whole
+
+  This allows us to perform all of our internal operations in terms of the
+  untracked data, and then to synchronize them into the tracked value at the end
+  of a given series of operations.
+
+  For example, with `pushBack`, it is important that we be able to carry out the
+  operations without ever *reading* from tracked state, while being able to mark
+  the collection as newly updated at the end. This allows that operation to be a
+  write-only operation, and safe for users to execute as many times as they want
+  in the course of rendering (i.e. it will not trigger the infinite rerender
+  assertion).
+
+  Per the discussion in the "Tracked Storage Handling" region above, once we
+  drop support for Ember versions earlier than 3.24 LTS, we can substitute the
+  use of the "cell" pattern there for a simpler scheme -- possibly just using
+  (and synchronizing) ordinary tracked properties alongside the base pointers,
+  since at that point we will consume the collection *automatically* in the
+  course of operations like running the iterator.
  */
-class _TrackedQueue<T> {
+class _TrackedQueue<T = unknown> {
   /** The backing storage for the queue. */
   private _queue: Array<T | undefined>;
 
   /** The capacity of the queue. */
   private _cap: number;
 
-  /** Pointer to the next point to write into the queue. */
-  @tracked private _head = 0;
+  /**
+    Pointer to the next point to write into the queue, that is, one (logical)
+    index after the current end of the queue.
+   */
+  private _head = 0;
 
-  /** Pointer to the start of the queue. */
-  @tracked private _tail = 0;
+  /**
+    Pointer to the start of the queue.
+   */
+  private _tail = 0;
 
   constructor({ capacity }: { capacity: number }) {
     if (this.constructor !== _TrackedQueue)
@@ -63,7 +153,10 @@ class _TrackedQueue<T> {
 
   /** The number of items in the queue. */
   get size(): number {
-    const { _head: head, _tail: tail } = this;
+    consumeCollection(this);
+    const head = this._head;
+    const tail = this._tail;
+
     if (head == tail) {
       return 0;
     } else if (head > tail) {
@@ -108,9 +201,11 @@ class _TrackedQueue<T> {
   // constructs like `#each`. It also allows a trivial implementation of `map`.
   *[Symbol.iterator](): Generator<T, undefined> {
     for (let index = 0; index < this.size; index++) {
+      consumeCollection(this);
       yield this.at(index) as T;
     }
 
+    consumeCollection(this);
     return undefined;
   }
 
@@ -218,22 +313,24 @@ class _TrackedQueue<T> {
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
   private _pushBack(value: T): Maybe<T> {
-    const { _head: head, _tail: tail, _cap: cap } = this;
+    dirtyCollection(this);
 
-    const nextHead = _wrappingAdd(head, 1, cap);
-    this._queue[head] = value;
+    const currentHead = this._head;
+
+    const nextHead = _wrappingAdd(currentHead, 1, this._cap);
+    this._queue[currentHead] = value;
     this._head = nextHead;
 
     let popped: Maybe<T>;
-    if (nextHead === tail) {
+    const currentTail = this._tail;
+    if (nextHead === currentTail) {
       // SAFETY: we know that in this scenario, the `nextHead` equals the `tail`
       // because the queue is *wrapping*. That means that we are displacing an
       // item which has been set in the backing storage previously, which in
       // turn means we can know that the cast `as T` is safe.
-      popped = ['just', this._queue[tail] as T];
-      this._queue[tail] = undefined;
-      const nextTail = _wrappingAdd(tail, 1, cap);
-      this._tail = nextTail;
+      popped = ['just', this._queue[currentTail] as T];
+      this._queue[currentTail] = undefined;
+      this._tail = _wrappingAdd(currentTail, 1, this._cap);
     } else {
       popped = ['nothing', undefined];
     }
@@ -260,6 +357,8 @@ class _TrackedQueue<T> {
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
   // and a slot which is actually *empty*.
   private _pushFront(value: T): Maybe<T> {
+    dirtyCollection(this);
+
     const head = this._head;
     const nextTail = _wrappingSub(this._tail, 1, this._cap);
 
@@ -271,6 +370,7 @@ class _TrackedQueue<T> {
       // item which has been set in the backing storage previously, which in
       // turn means we can know that the cast `as T` is safe.
       popped = ['just', this._queue[nextHead] as T];
+
       this._queue[nextHead] = undefined;
       this._head = nextHead;
     } else {
@@ -285,31 +385,36 @@ class _TrackedQueue<T> {
 
   /** Remove the last item on the queue, if any. */
   popBack(): T | undefined {
+    dirtyCollection(this);
+
     if (this.size === 0) {
       return undefined;
     }
 
-    const head = this._head;
-    const nextHead = _wrappingSub(head, 1, this._cap);
+    const currentHead = this._head;
+    const nextHead = _wrappingSub(currentHead, 1, this._cap);
 
     const popped = this.back;
-    this._queue[head] = undefined;
+    this._queue[currentHead] = undefined;
     this._head = nextHead;
+
     return popped;
   }
 
   /** Remove the first item on the queue, if any. */
   popFront(): T | undefined {
+    dirtyCollection(this);
     if (this.size === 0) {
       return undefined;
     }
 
-    const { _tail } = this;
-    const nextTail = _wrappingAdd(_tail, 1, this._cap);
+    const currentTail = this._tail;
+    const nextTail = _wrappingAdd(currentTail, 1, this._cap);
 
     const popped = this.front;
-    this._queue[_tail] = undefined;
+    this._queue[currentTail] = undefined;
     this._tail = nextTail;
+
     return popped;
   }
 
@@ -376,6 +481,7 @@ class _TrackedQueue<T> {
 
   /** Delete all the items in the queue. */
   clear() {
+    dirtyCollection(this);
     this._queue = Array.from({ length: this._cap });
     this._head = 0;
     this._tail = 0;
@@ -462,6 +568,6 @@ export interface TrackedQueueConstructor {
   An autotracked ring-buffer-backed queue with `O(1)` insertion, deletion, and
   access, and `O(N)` reordering.
  */
-export type TrackedQueue<T> = EmptyQueue<T> | PopulatedQueue<T>;
+export type TrackedQueue<T = unknown> = EmptyQueue<T> | PopulatedQueue<T>;
 export const TrackedQueue = _TrackedQueue as TrackedQueueConstructor;
 export default TrackedQueue;
