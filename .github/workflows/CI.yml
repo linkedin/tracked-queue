@@ -18,6 +18,12 @@ jobs:
   lint:
     name: 'Linting'
     runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+
+      # ensure we cannot regress parallization
+      THROW_UNLESS_PARALLELIZABLE: '1'
+
     steps:
       - uses: actions/checkout@v2
       - uses: volta-cli/action@v1
@@ -44,6 +50,11 @@ jobs:
     needs: lint
     name: 'Tests: ${{ matrix.os }}'
     runs-on: '${{ matrix.os }}-latest'
+    env:
+      CI: 'true'
+
+      # ensure we cannot regress parallization
+      THROW_UNLESS_PARALLELIZABLE: '1'
 
     strategy:
       matrix:
@@ -59,6 +70,12 @@ jobs:
     needs: [lint, tests_linux]
     name: 'Ember compatibility tests: ember-source@${{ matrix.ember-version }})'
     runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+
+      # ensure we cannot regress parallization
+      THROW_UNLESS_PARALLELIZABLE: '1'
+
     strategy:
       matrix:
         ember-version:
