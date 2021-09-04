@@ -1754,9 +1754,9 @@
     "@types/jquery" "*"
 
 "@types/ember__controller@*", "@types/ember__controller@^3.16.4":
-  version "3.16.4"
-  resolved "https://registry.yarnpkg.com/@types/ember__controller/-/ember__controller-3.16.4.tgz#2216df95c7466635e8a615e26318cca41e502b53"
-  integrity sha512-XkRBVmf6YM+s5tli4qnlGcg5VpbrlQ/EsfVdM20V5JfO4DzlmTlTUb/F1i0CTsU9DxFLhZSzGn9nXyOBkHMf1Q==
+  version "3.16.6"
+  resolved "https://registry.yarnpkg.com/@types/ember__controller/-/ember__controller-3.16.6.tgz#1fbb5f9483b9b9fd59b78f7289e6bd382e457f9c"
+  integrity sha512-oltv4YaMljVMvhXJMT/UFmAQOJgYbnNUBGgOsclctpb9FYkimsJm8xIAoEmP5wBekzjeNd5UDf9F1DxSDpqgGw==
   dependencies:
     "@types/ember__object" "*"
 
@@ -1788,9 +1788,9 @@
   integrity sha512-bnB58krc18B8qgSMsRBbrVbNb4msyb8pMzS9Yo3brw/bRjuPb1ONUrjieAVHeespXlXNJOusvvX/pji641iCPQ==
 
 "@types/ember__object@*", "@types/ember__object@^3.12.5":
-  version "3.12.5"
-  resolved "https://registry.yarnpkg.com/@types/ember__object/-/ember__object-3.12.5.tgz#f3d5ea5e410d52b3e837267e411d72d7469eb844"
-  integrity sha512-IToStKZ6bNfkiqjhpnpf24NADNIqrSd3pmpc0ktRilrMZPoHyexcXW6zyGENtpFJE7O7dVjtPh/MzUYYH0urww==
+  version "3.12.6"
+  resolved "https://registry.yarnpkg.com/@types/ember__object/-/ember__object-3.12.6.tgz#5f77662881e3c6f877d63e08b46861c52a36714a"
+  integrity sha512-LAGldyJmFpErWLCm1HOAGd3G4E7Sem+AzQycKH+zSiYSwKVxNSpzUIU1yewlScHn5WvKwLEVE2H6mPvwvkQ+yA==
   dependencies:
     "@types/ember__object" "*"
     "@types/rsvp" "*"
