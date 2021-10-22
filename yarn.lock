@@ -1643,9 +1643,9 @@
     "@types/node" "*"
 
 "@types/ember-qunit@^3.4.13":
-  version "3.4.13"
-  resolved "https://registry.yarnpkg.com/@types/ember-qunit/-/ember-qunit-3.4.13.tgz#58d359b62a6f6e7039d546f4c08b83ad269f7498"
-  integrity sha512-T7Lq8ppyxueneQgXeo8VsV4OGMeVTMYuzFOc5yUAGZIkUDSi907CdVkCCO4zUqRGl9FkkgCQUxwPiZv+reerGQ==
+  version "3.4.14"
+  resolved "https://registry.yarnpkg.com/@types/ember-qunit/-/ember-qunit-3.4.14.tgz#4c10ce71e1eb6618ef7c680616beff8358e9c486"
+  integrity sha512-gVjul0Gei69Ftstd8gOPbKvIs9ywmtdBkvOTxq1uXsFU2EiVUWBtIzP9bMT9CrD39nKnB/rFdRXAwFcSnPUNJg==
   dependencies:
     "@types/ember" "*"
     "@types/ember-test-helpers" "*"
@@ -6557,10 +6557,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-expect-type@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/expect-type/-/expect-type-0.12.0.tgz#133534b5e2561158c371e74af63fd8f18a9f3d42"
-  integrity sha512-IHwziEOjpjXqxQhtOAD5zMiQpGztaEKM4Q8wnwoRN9NIFlnyNHNjRxKWv+18UqRfsqi6vVnZIYFU16ePf+HaqA==
+expect-type@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/expect-type/-/expect-type-0.13.0.tgz#916646a7a73f3ee77039a634ee9035efe1876eb2"
+  integrity sha512-CclevazQfrqo8EvbLPmP7osnb1SZXkw47XPPvUUpeMz4HuGzDltE7CaIt3RLyT9UQrwVK/LDn+KVcC0hcgjgDg==
 
 express@^4.10.7, express@^4.17.1:
   version "4.17.1"
