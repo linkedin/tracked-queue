@@ -1,5 +1,7 @@
 # tracked-queue
 
+:warning: **NOTE:** this is the README for the upcoming v2 release! For the v1 README, see [here](https://github.com/linkedin/tracked-queue/blob/e934485f04db56b9bd64ebc66eb0f21006d2d6ae/README.md). :warning:
+
 <!--[![npm(https://img.shields.io/npm/v/tracked-queue.svg])](https://www.npmjs.com/package/tracked-queue)-->
 
 [![CI](https://github.com/linkedin/tracked-queue/actions/workflows/CI.yml/badge.svg)](https://github.com/linkedin/tracked-queue/actions/workflows/CI.yml) [![Supportd TypeScript Versions](https://img.shields.io/badge/TypeScript-4.1%20%7C%204.2%20%7C%204.3%20%7C%20next-3178c6)](https://github.com/linkedin/tracked-queue/blob/main/.github/workflows/CI.yml#L82) <!--[![Nightly TypeScript Run](https://github.com/linkedin/tracked-queue/actions/workflows/Nightly%20TypeScript%20Run.yml/badge.svg)](https://github.com/linkedin/tracked-queue/actions/workflows/Nightly%20TypeScript%20Run.yml)-->
