@@ -1,3 +1,15 @@
+## v1.1.0 (2022-05-11)
+
+#### :rocket: Enhancement
+* [#145](https://github.com/linkedin/tracked-queue/pull/145) Add support for TS 4.4 - 4.6 ([@chriskrycho](https://github.com/chriskrycho))
+
+#### :house: Internal
+* [#144](https://github.com/linkedin/tracked-queue/pull/144) Simplify TS tests in CI ([@chriskrycho](https://github.com/chriskrycho))
+* [#68](https://github.com/linkedin/tracked-queue/pull/68) Ensure CI fails if we break parallelization ([@chriskrycho](https://github.com/chriskrycho))
+
+#### Committers: 1
+- Chris Krycho ([@chriskrycho](https://github.com/chriskrycho))
+
 ## v1.0.1 (2021-07-01)
 
 #### :bug: Bug Fix
