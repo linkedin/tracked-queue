@@ -3,9 +3,9 @@ import { setupTest } from 'ember-qunit';
 import TrackedQueue from 'tracked-queue';
 import { expectTypeOf } from 'expect-type';
 import { render, settled as rerender } from '@ember/test-helpers';
+import type { TestContext as BaseContext } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'ember-qunit';
-import type { TestContext as BaseContext } from 'ember-test-helpers';
 import Component from '@glimmer/component';
 import { setComponentTemplate } from '@ember/component';
 

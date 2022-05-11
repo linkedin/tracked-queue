@@ -1,5 +1,7 @@
 # tracked-queue
 
+:warning: **NOTE:** this is the README for the upcoming v2 release! For the v1 README, see [here](https://github.com/linkedin/tracked-queue/blob/e934485f04db56b9bd64ebc66eb0f21006d2d6ae/README.md). :warning:
+
 <!--[![npm(https://img.shields.io/npm/v/tracked-queue.svg])](https://www.npmjs.com/package/tracked-queue)-->
 
 [![CI](https://github.com/linkedin/tracked-queue/actions/workflows/CI.yml/badge.svg)](https://github.com/linkedin/tracked-queue/actions/workflows/CI.yml) [![Supportd TypeScript Versions](https://img.shields.io/badge/TypeScript-4.1%20%7C%204.2%20%7C%204.3%20%7C%20next-3178c6)](https://github.com/linkedin/tracked-queue/blob/main/.github/workflows/CI.yml#L82) <!--[![Nightly TypeScript Run](https://github.com/linkedin/tracked-queue/actions/workflows/Nightly%20TypeScript%20Run.yml/badge.svg)](https://github.com/linkedin/tracked-queue/actions/workflows/Nightly%20TypeScript%20Run.yml)-->
@@ -98,7 +100,7 @@ console.log(poppedByPush); // undefined
 
 This project follows the current draft of [the Semantic Versioning for TypeScript Types][semver] specification.
 
-- **Currently supported TypeScript versions:** v4.1, v4.2, v4.3, v4.4, v4.5, and v4.6
+- **Currently supported TypeScript versions:** v4.4, v4.5, and v4.6
 - **Compiler support policy:** [simple majors][sm]
 - **Public API:** all published types not in a `-private` module are public
 
