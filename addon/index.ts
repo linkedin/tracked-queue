@@ -4,7 +4,6 @@ import {
   setValue,
   TrackedStorage,
 } from 'ember-tracked-storage-polyfill';
-import { macroCondition, dependencySatisfies } from '@embroider/macros';
 
 class TrackedQueueError extends Error {
   constructor(message: string) {
@@ -14,58 +13,34 @@ class TrackedQueueError extends Error {
 
 //#region Tracked Storage Handling
 
-// This is a workaround for two Ember version issues we need to manage:
+// Use the tracked storage primitives with a "sentinel"-style tracked property
+// so the only overhead from the tracking operations is setting that sentinel
+// value. There is a single storage marker for each instance of the class,
+// stored in a WeakMap so that it is available to be GC'd automatically when the
+// class instance is GC'd.
 //
-// - Prior to Ember 3.22, iteration (via `Symbol.iterator` as in this class or
-//   using `forEach` for a legacy behavior, not used here) is not properly
-//   autotracked, and so it must be managed automatically.
-// - From 3.27 up, the `Ember` global doesn't exist, and so this would error if
-//   it were unguarded.
-//
-// Happily, these can both be solved together, by using Embroider's macro system
-// to simply use the tracked storage primitives directly on Ember >= 3.22.
+// The basic algorithm is: whenever reading properties from the collection, flag
+// that the collection has been "consumed", and whenever setting properties on
+// it, flag that it is "dirty".
+const COLLECTION_STORAGE = new WeakMap<
+  _TrackedQueue,
+  TrackedStorage<_TrackedQueue>
+>();
 
-let consumeCollection: (q: _TrackedQueue) => void;
-let dirtyCollection: (q: _TrackedQueue) => void;
-
-// These do not exist in any way at runtime or even as part of the build once
-// the Babel TS transform has run. They're purely type declarations, which are
-// erased by that transform. Accordingly, they will not trigger any errors or
-// warnings even in the build.
-import type EmberNamespace from 'ember';
-declare const Ember: typeof EmberNamespace | undefined;
-
-if (macroCondition(dependencySatisfies('ember-source', '< 3.22.0-alpha.1'))) {
-  type NotifyCollection = { '[]': unknown };
-
-  if (typeof Ember !== 'undefined') {
-    /* eslint-disable ember/new-module-imports */
-    consumeCollection = (q) =>
-      Ember.get(q as unknown as NotifyCollection, '[]');
-    dirtyCollection = (q) =>
-      Ember.notifyPropertyChange(q as unknown as NotifyCollection, '[]');
-    /* eslint-enable ember/new-module-imports */
-  }
-} else {
-  const COLLECTION_STORAGE = new WeakMap<
-    _TrackedQueue,
-    TrackedStorage<_TrackedQueue>
-  >();
-
-  // eslint-disable-next-line no-inner-declarations
-  function getOrCreateStorage(q: _TrackedQueue) {
-    let storage = COLLECTION_STORAGE.get(q);
-    if (storage === undefined) {
-      storage = createStorage(q, () => false);
-      COLLECTION_STORAGE.set(q, storage);
-    }
-
-    return storage;
+function getOrCreateStorage(q: _TrackedQueue) {
+  let storage = COLLECTION_STORAGE.get(q);
+  if (storage === undefined) {
+    storage = createStorage(q, () => false);
+    COLLECTION_STORAGE.set(q, storage);
   }
 
-  consumeCollection = (q) => getValue(getOrCreateStorage(q));
-  dirtyCollection = (q) => setValue(getOrCreateStorage(q), q);
+  return storage;
 }
+
+const consumeCollection = (q: _TrackedQueue) => getValue(getOrCreateStorage(q));
+const dirtyCollection = (q: _TrackedQueue) =>
+  setValue(getOrCreateStorage(q), q);
+
 //#endregion
 
 /**
