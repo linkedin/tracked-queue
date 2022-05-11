@@ -5369,9 +5369,9 @@ ember-cli-babel@^7.0.0, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-
     semver "^5.5.0"
 
 ember-cli-dependency-checker@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-dependency-checker/-/ember-cli-dependency-checker-3.2.0.tgz#9202ad9e14d6fda33cffc22a11c343c2a8885330"
-  integrity sha512-dkSmcJ/jY/2ms/S6ph2jXSfOW5VfOpLfg5DFEbra0SaMNgYkNDFF1o0U4OdTsG37L5h/AXWNuVtnOa4TMabz9Q==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ember-cli-dependency-checker/-/ember-cli-dependency-checker-3.3.1.tgz#16b44d7a1a1e946f59859fad97f32e616d78323a"
+  integrity sha512-Tg6OeijjXNKWkDm6057Tr0N9j9Vlz/ITewXWpn1A/+Wbt3EowBx5ZKfvoupqz05EznKgL1B/ecG0t+JN7Qm6MA==
   dependencies:
     chalk "^2.3.0"
     find-yarn-workspace-root "^1.1.0"
@@ -7690,6 +7690,11 @@ ignore@^4.0.6:
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
 ignore@^5.1.1, ignore@^5.1.4, ignore@^5.1.8:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
+  integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
+
+ignore@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
