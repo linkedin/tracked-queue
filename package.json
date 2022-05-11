@@ -39,7 +39,7 @@
     "postpack": "ember ts:clean"
   },
   "dependencies": {
-    "@embroider/macros": "^0.44.1",
+    "@embroider/macros": "^1.6.0",
     "ember-cli-babel": "^7.26.5",
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-typescript": "^5.1.0"
