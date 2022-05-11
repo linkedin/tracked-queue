@@ -43,12 +43,29 @@ const dirtyCollection = (q: _TrackedQueue) =>
 
 //#endregion
 
+//#region Maybe
+
+// Define a lightweight "maybe" type. Use integer values as the discriminants
+// (as if using a const enum... but without introducing a const enum).
+
+// There is only ever a single instance of this in the system.
+const NOTHING = [1, undefined] as const;
+type Nothing = typeof NOTHING;
+
+// There cannot be a similar single value for the Just version because we need
+// to construct it on a per-value basis...but we can make sure the same string
+// is reused!
+const JUST = 0;
+type Just<T> = [typeof JUST, T];
+
 /**
   A very lightweight internal-only data structure so that we can distinguish
   between the cases where the value in the queue is `undefined` and where there
   was no value in the queue. (:sigh: at JavaScript)
  */
-type Maybe<T> = ['just', T] | ['nothing', undefined];
+type Maybe<T> = Just<T> | Nothing;
+
+//#endregion
 
 /**
   Notes on the implementation:
@@ -303,11 +320,11 @@ class _TrackedQueue<T = unknown> {
       // because the queue is *wrapping*. That means that we are displacing an
       // item which has been set in the backing storage previously, which in
       // turn means we can know that the cast `as T` is safe.
-      popped = ['just', this._queue[currentTail] as T];
+      popped = [JUST, this._queue[currentTail] as T];
       this._queue[currentTail] = undefined;
       this._tail = _wrappingAdd(currentTail, 1, this._cap);
     } else {
-      popped = ['nothing', undefined];
+      popped = NOTHING;
     }
 
     return popped;
@@ -344,12 +361,12 @@ class _TrackedQueue<T = unknown> {
       // because the queue is *wrapping*. That means that we are displacing an
       // item which has been set in the backing storage previously, which in
       // turn means we can know that the cast `as T` is safe.
-      popped = ['just', this._queue[nextHead] as T];
+      popped = [JUST, this._queue[nextHead] as T];
 
       this._queue[nextHead] = undefined;
       this._head = nextHead;
     } else {
-      popped = ['nothing', undefined];
+      popped = NOTHING;
     }
 
     this._queue[nextTail] = value;
@@ -403,7 +420,7 @@ class _TrackedQueue<T = unknown> {
     const popped: T[] = [];
     for (const value of values) {
       const _popped = this._pushBack(value);
-      if (_popped[0] === 'just') {
+      if (_popped[0] === JUST) {
         popped.push(_popped[1]);
       }
     }
@@ -429,7 +446,7 @@ class _TrackedQueue<T = unknown> {
       // `append`, but we cannot do that on the reverse of an array, and
       // calling `.reverse()` would trigger a needless *O(N)* operation.
       const value = this._pushFront(values[i] as T);
-      if (value[0] === 'just') {
+      if (value[0] === JUST) {
         popped.unshift(value[1]);
       }
     }
