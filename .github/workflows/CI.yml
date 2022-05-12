@@ -80,9 +80,10 @@ jobs:
       matrix:
         ember-version:
           - 'lts-3.24'
-          # - 'release'
-          # - 'beta'
-          # - 'canary'
+          - 'lts-3.28'
+          - 'release'
+          - 'beta'
+          - 'canary'
 
     steps:
       - uses: actions/checkout@v2
