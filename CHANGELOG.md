@@ -5,7 +5,7 @@
 * [#169](https://github.com/linkedin/tracked-queue/pull/169) Update to ember-auto-import v2 ([@chriskrycho](https://github.com/chriskrycho))
 * [#156](https://github.com/linkedin/tracked-queue/pull/156) Remove special handling for Ember <3.24 ([@chriskrycho](https://github.com/chriskrycho))
 * [#148](https://github.com/linkedin/tracked-queue/pull/148) Drop support for Node 12 ([@chriskrycho](https://github.com/chriskrycho))
-* [#146](https://github.com/linkedin/tracked-queue/pull/146) Update to use Ember v4 types ([@chriskrycho](https://github.com/chriskrycho))
+* [#146](https://github.com/linkedin/tracked-queue/pull/146) Update to use Ember v4 types ([@chriskrycho](https://github.com/chriskrycho)) – includes setting minimum supported TypeScript version to 4.4
 
 #### :rocket: Enhancement
 * [#170](https://github.com/linkedin/tracked-queue/pull/170) Update to Ember v4 ([@chriskrycho](https://github.com/chriskrycho))
