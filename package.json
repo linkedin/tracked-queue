@@ -1,6 +1,6 @@
 {
   "name": "tracked-queue",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "An autotracked implementation of a double-ended queue, implemented as a ring-buffer backed by a native JavaScript array.",
   "keywords": [
     "ember-addon",
