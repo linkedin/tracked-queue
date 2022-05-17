@@ -303,7 +303,7 @@ class _TrackedQueue<T = unknown> {
   // `Maybe<T>` so that the backing storage can be "cleared" when an element is
   // remove by setting that slot to `undefined`, but distinguishing between a
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
-  // and a slot which is actually *empty*.
+  // and a slot which is actually *empty*. (This mostly matters for `append`.)
   private _pushBack(value: T): Maybe<T> {
     dirtyCollection(this);
 
@@ -347,7 +347,7 @@ class _TrackedQueue<T = unknown> {
   // a `Maybe<T>` so that the backing storage can be "cleared" when an element
   // is remove by setting that slot to `undefined`, but distinguishing between a
   // slot in a queue where `T` includes `undefined` (e.g. `string | undefined`)
-  // and a slot which is actually *empty*.
+  // and a slot which is actually *empty*. (This mostly matters for `preend`.)
   private _pushFront(value: T): Maybe<T> {
     dirtyCollection(this);
 
