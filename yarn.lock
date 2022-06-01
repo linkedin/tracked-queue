@@ -1593,9 +1593,9 @@
   integrity sha512-Yk85J18y1Ys6agoIBLdJWu6ZkWe68oaC9JPyW7BhOINVNKm89PXrR/yxdOJ1/vN1Hj7ZZQKq+4X6fz3sxebavA==
 
 "@types/ember__routing@*", "@types/ember__routing@~4.0":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@types/ember__routing/-/ember__routing-4.0.5.tgz#f4e5c3d0e966859594d0303aa863053538802928"
-  integrity sha512-9f5wWoDn1snfjwtgX4uCvuvJSbG71vUzQcD1LDH6k5oWdhjk3iUsIalN4xD9jWzWF9JkasrTuOv+0wyNR4ahFw==
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/@types/ember__routing/-/ember__routing-4.0.7.tgz#16cc442fcee2dda06dc79bb3d7fd5002f154ad07"
+  integrity sha512-iWsk8C0WIqqK6dgK1UdJisyQLs6rVq/+A2f7fXjdLJHA+SAHK8aqfCHHFkTuiy4sXkM/PBINmP9qHpk4KrScbw==
   dependencies:
     "@types/ember" "*"
     "@types/ember__controller" "*"
@@ -5242,9 +5242,9 @@ ember-source-channel-url@^3.0.0:
     node-fetch "^2.6.0"
 
 ember-source@~4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-4.4.0.tgz#c2fbabcda11a00c8cbc890ef1ba5a565c2ceeebe"
-  integrity sha512-o4jJko/2IRfGsyfje51nNYMQj+OusJph4CIGF+Yk9pmvoS0TbzKHKWlnFiIygTcnUiMHkG18FL9Z0LSd/Kgl5w==
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-4.4.1.tgz#c98b5af3b6b4ed9f6d12736494d364cb6ce46a50"
+  integrity sha512-Ps0ff1RTJdKCBSLWqcFMUbYZ4CNr7eeYWZvR1pWFALTJbNRVCNXIiZCvS4hl+acQ4TyKszkFV+uLaVqJImakFg==
   dependencies:
     "@babel/helper-module-imports" "^7.16.7"
     "@babel/plugin-transform-block-scoping" "^7.16.0"
@@ -5274,9 +5274,9 @@ ember-source@~4.4.0:
     silent-error "^1.1.1"
 
 ember-template-lint@^4.7.0:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-4.9.0.tgz#982830ec949e77dc39fd14c44bcfd1903e11f63c"
-  integrity sha512-corIvZ0DxcO6VUiBScePSrXCNT/aP1l3U4/6pL9+34iGMVVpkOKdkAr8ENJ0YTF3LszK8LfKNRMXM5IK1OaKWg==
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/ember-template-lint/-/ember-template-lint-4.10.0.tgz#7a0a15817ec3e83c5ac9c4b47e8018b007308635"
+  integrity sha512-Cvs7K8UxjhNecONpBlDAx6VzA7IwC7yunFGsvg/3gZqDpNVZvK4lwqCeIe/bsD3lDbMBETVHzKovgCq3pafvdw==
   dependencies:
     "@lint-todo/utils" "^13.0.3"
     aria-query "^5.0.0"
