@@ -69,7 +69,7 @@
     "@types/ember__test-helpers": "~2.6",
     "@types/ember__utils": "~4.0",
     "@types/htmlbars-inline-precompile": "~3.0",
-    "@types/qunit": "~2.11",
+    "@types/qunit": "~2.19",
     "@types/rsvp": "~4.0",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
